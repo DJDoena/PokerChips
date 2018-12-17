@@ -141,9 +141,7 @@
         {
             remainingValue = Convert.ToInt32(SumUpDown.Value);
 
-            var maxChips = Convert.ToInt32(MaxChipsUpDown.Value);
-
-            var amountPlayers = Convert.ToInt32(PlayersUpDown.Value);
+            var chipCalculator = new ChipCalculator(playerChips, Convert.ToInt32(MaxChipsUpDown.Value), Convert.ToInt32(PlayersUpDown.Value));
 
             for (int index = 0; index < caseChips.Count; index++)
             {
@@ -151,7 +149,7 @@
 
                 var nextCaseChip = (index < caseChips.Count - 1) ? caseChips[index + 1] : null;
 
-                if (PlayerChipCalculator.AddPlayerChip(playerChips, caseChip, maxChips, amountPlayers, nextCaseChip, ref remainingValue))
+                if (chipCalculator.AddPlayerChip(caseChip, nextCaseChip, ref remainingValue))
                 {
                     break;
                 }
@@ -168,6 +166,7 @@
             SetComboBoxes(3, -1, -1);
             SetComboBoxes(4, -1, -1);
         }
+
         private void OnOneFull500Click(object sender, EventArgs e)
         {
             SetComboBoxes(0, 3, 1);
