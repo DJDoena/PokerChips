@@ -17,61 +17,50 @@
             _amountPlayers = amountPlayers;
         }
 
-        internal bool AddPlayerChip(Chip caseChip, Chip nextCaseChip, ref int remainingValue)
+        internal bool AddPlayerChip(Chip currentCaseChip, Chip nextCaseChip, ref int remainingValue)
         {
-            var amountChips = caseChip.Amount / _amountPlayers;
+            var chipValue = currentCaseChip.Value;
 
-            if (amountChips > _maxChips)
+            var amount = GetAmount(currentCaseChip.Amount, chipValue, remainingValue);
+
+            if (IsLastChip(chipValue, nextCaseChip, remainingValue))
             {
-                amountChips = _maxChips;
-            }
-
-            var chipValue = caseChip.Value;
-
-            if (IsFinalChip(amountChips, chipValue, remainingValue))
-            {
-                amountChips = remainingValue / chipValue;
-
-                AddPlayerChip(amountChips, chipValue, ref remainingValue);
+                AddPlayerChip(amount, chipValue, ref remainingValue);
 
                 return true;
             }
 
-            if (ChipsExceedRemainingValue(amountChips, chipValue, remainingValue))
-            {
-                amountChips = remainingValue / chipValue;
-            }
-
-            if (nextCaseChip == null)
-            {
-                AddPlayerChip(amountChips, chipValue, ref remainingValue);
-
-                return true;
-            }
-
-            var finished = AddPlayerChipWithConvenientValueForNextChip(amountChips, chipValue, nextCaseChip.Value, ref remainingValue);
+            var finished = AddPlayerChipWithConvenientValueForNextChip(amount, chipValue, nextCaseChip.Value, ref remainingValue);
 
             return finished;
         }
 
-        private bool AddPlayerChipWithConvenientValueForNextChip(int amount, int currentChipValue, int nextChipValue, ref int remainingValue)
+        private int GetAmount(int caseChipAmount, int chipValue, int remainingValue)
         {
-            var tempRemainingValue = remainingValue - (amount * currentChipValue);
+            var chipAmount = caseChipAmount / _amountPlayers;
 
-            if (NextChipIsDivisibleWithoutRest(nextChipValue, tempRemainingValue))
+            if (chipAmount > _maxChips)
             {
-                AddPlayerChip(amount, currentChipValue, ref remainingValue);
-
-                return remainingValue == 0;
+                chipAmount = _maxChips;
             }
 
-            for (amount -= 1; amount > 0; amount--)
+            if (ChipsExceedRemainingValue(chipAmount, chipValue, remainingValue))
             {
-                tempRemainingValue = remainingValue - (amount * currentChipValue);
+                chipAmount = remainingValue / chipValue;
+            }
 
-                if (NextChipIsDivisibleWithoutRest(nextChipValue, tempRemainingValue))
+            return chipAmount;
+        }
+
+        private bool AddPlayerChipWithConvenientValueForNextChip(int chipAmount, int currentChipValue, int nextChipValue, ref int remainingValue)
+        {
+            for (; chipAmount > 0; chipAmount--)
+            {
+                var potentialRemainingValue = remainingValue - (chipAmount * currentChipValue);
+
+                if (IsDivisibleWithoutRest(nextChipValue, potentialRemainingValue))
                 {
-                    AddPlayerChip(amount, currentChipValue, ref remainingValue);
+                    AddPlayerChip(chipAmount, currentChipValue, ref remainingValue);
 
                     return remainingValue == 0;
                 }
@@ -80,20 +69,20 @@
             return remainingValue == 0;
         }
 
-        private void AddPlayerChip(int amount, int value, ref int remainingValue)
+        private void AddPlayerChip(int chipAmount, int chipValue, ref int remainingValue)
         {
-            _playerChips.Add(new Chip(amount, value));
+            _playerChips.Add(new Chip(chipAmount, chipValue));
 
-            remainingValue -= (amount * value);
+            remainingValue -= (chipAmount * chipValue);
         }
 
-        private static bool IsFinalChip(int amount, int value, int remainingValue)
-            => ChipsExceedRemainingValue(amount, value, remainingValue) && NextChipIsDivisibleWithoutRest(value, remainingValue);
+        private static bool IsLastChip(int chipValue, Chip nextCaseChip, int remainingValue)
+            => nextCaseChip == null || IsDivisibleWithoutRest(chipValue, remainingValue);
 
-        private static bool ChipsExceedRemainingValue(int amount, int value, int remainingValue)
-            => (amount * value) >= remainingValue;
+        private static bool ChipsExceedRemainingValue(int chipAmount, int chipValue, int remainingValue)
+            => (chipAmount * chipValue) >= remainingValue;
 
-        private static bool NextChipIsDivisibleWithoutRest(int caseChipValue, int remainingValue)
-            => (remainingValue % caseChipValue) == 0;
+        private static bool IsDivisibleWithoutRest(int chipValue, int remainingValue)
+            => (remainingValue % chipValue) == 0;
     }
 }
