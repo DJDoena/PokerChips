@@ -1,0 +1,24 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.168
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PokerChipsForWindows", "PokerChips_Windows\PokerChipsForWindows.csproj", "{44E6C38D-0AA1-4B58-AC54-2435817AD219}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{44E6C38D-0AA1-4B58-AC54-2435817AD219}.Debug|x86.ActiveCfg = Debug|x86
+		{44E6C38D-0AA1-4B58-AC54-2435817AD219}.Debug|x86.Build.0 = Debug|x86
+		{44E6C38D-0AA1-4B58-AC54-2435817AD219}.Release|x86.ActiveCfg = Release|x86
+		{44E6C38D-0AA1-4B58-AC54-2435817AD219}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {77534990-729D-46C1-A99A-C6F706803777}
+	EndGlobalSection
+EndGlobal
