@@ -1,8 +1,8 @@
-﻿using System;
-using System.Windows.Forms;
-
-namespace PokerChips
+﻿namespace DoenaSoft.PokerChips
 {
+    using System;
+    using System.Windows.Forms;
+
     static class Program
     {
         /// <summary>

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -8,7 +8,7 @@
     <ProjectGuid>{44E6C38D-0AA1-4B58-AC54-2435817AD219}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>PokerChips</RootNamespace>
+    <RootNamespace>DoenaSoft.PokerChips</RootNamespace>
     <AssemblyName>PokerChipsForWindows</AssemblyName>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>
@@ -35,7 +35,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>..\PokerChips_Mobile\DJDSOFT.ICO</ApplicationIcon>
+    <ApplicationIcon>DJDSOFT.ICO</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -43,42 +43,33 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\PokerChips_Mobile\Chip.cs">
-      <Link>Chip.cs</Link>
-    </Compile>
-    <Compile Include="..\PokerChips_Mobile\MainForm.cs">
-      <Link>MainForm.cs</Link>
+    <Compile Include="Chip.cs" />
+    <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="..\PokerChips_Mobile\MainForm.designer.cs">
-      <Link>MainForm.designer.cs</Link>
+    <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="..\PokerChips_Mobile\ResultForm.cs">
-      <Link>ResultForm.cs</Link>
+    <Compile Include="PlayerChipCalculator.cs" />
+    <Compile Include="ResultForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="..\PokerChips_Mobile\ResultForm.designer.cs">
-      <Link>ResultForm.designer.cs</Link>
+    <Compile Include="ResultForm.Designer.cs">
       <DependentUpon>ResultForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="..\PokerChips_Mobile\MainForm.resx">
-      <Link>MainForm.resx</Link>
+    <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="..\PokerChips_Mobile\ResultForm.resx">
-      <Link>ResultForm.resx</Link>
+    <EmbeddedResource Include="ResultForm.resx">
       <DependentUpon>ResultForm.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\PokerChips_Mobile\DJDSOFT.ICO">
-      <Link>DJDSOFT.ICO</Link>
-    </Content>
+    <Content Include="DJDSOFT.ICO" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
