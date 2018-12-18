@@ -106,8 +106,6 @@ function addCaseRow(caseIndex)
     addValueOptions(valueSelectNode);
 }
 
-
-
 function setCaseDefaults(caseIndex, amount, value)
 {
     getById("caseChipAmount_" + caseIndex).value = amount;
