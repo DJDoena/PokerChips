@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Poker Chips</title>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+        <script src="PokerChips.js"></script>
+    </head>
+    <body>
+        <form>
+            <table id="caseTable" style="border: 0px;">
+                <tr>
+                    <td>Players:</td>
+                    <td><input type="number" id="amountPlayers" min="2" max="10" value="5" /></td>
+                </tr>
+                <tr>
+                    <td>Stack Size:</td>
+                    <td><input type="number" id="stackSize" min="1000" max="10000" value="5000" /></td>
+                </tr>
+                <tr>
+                    <td>Maximum number of chips per value:</td>
+                    <td><input type="number" id="maxChips" min="10" max="300" value="20" /></td>
+                </tr>
+                <tr>
+                    <td><input type="button" value="Load case &quot;One 500 (normal)&quot;" onClick="setOneNormal500Case();" style="width: 95%;" /></td>
+					<td>&nbsp;</td>
+                </tr>
+                <tr>
+                    <td><input type="button" value="Load case &quot;One 500 (full)&quot;" onClick="setOneFull500Case();" style="width: 95%;" /></td>
+					<td>&nbsp;</td>
+                </tr>
+                <tr>
+                    <td><input type="button" value="Load case &quot;Two 500s (full)&quot;" onClick="setTwo500Case();" style="width: 95%;" /></td>
+					<td>&nbsp;</td>
+                </tr>
+                <tr>
+                    <th>Number of chips:</th>
+                    <th>Chip value:</th>
+                </tr>
+                <script>
+                    for(var caseIndex = 0; caseIndex < 5; caseIndex++)
+                    {
+                        addCaseRow(caseIndex);
+                    }
+                </script>
+                <tr>
+                    <td><input type="button" value="Calculate" onClick="calulate();" style="width: 95%;" /></td>
+					<td>&nbsp;</td>
+                </tr>
+            </table>
+        </form>
+    </body>
+</html>
