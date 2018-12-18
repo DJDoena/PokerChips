@@ -52,15 +52,12 @@ function getById(id)
 function setId(node, id)
 {
     node.setAttribute("id", id);
-    //node.setAttribute("name", id);
 }
 
 function addSelectOption(selectNode, value)
 {
     var optionNode = document.createElement("OPTION");
-    //var id = selectNode.getAttribute("id") + "_" + value;
-    //setId(optionNode, id);
-    optionNode.innerHTML = value;
+    optionNode.innerText = value;
     selectNode.add(optionNode);
 }
 
