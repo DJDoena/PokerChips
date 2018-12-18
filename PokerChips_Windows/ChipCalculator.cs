@@ -23,7 +23,7 @@
 
             var amount = GetAmount(currentCaseChip.Amount, chipValue, remainingValue);
 
-            if (IsLastChip(chipValue, nextCaseChip, remainingValue))
+            if (IsLastChip(amount, chipValue, nextCaseChip, remainingValue))
             {
                 AddPlayerChip(amount, chipValue, ref remainingValue);
 
@@ -52,21 +52,21 @@
             return chipAmount;
         }
 
-        private bool AddPlayerChipWithConvenientValueForNextChip(int chipAmount, int currentChipValue, int nextChipValue, ref int remainingValue)
+        private bool AddPlayerChipWithConvenientValueForNextChip(int currentChipAmount, int currentChipValue, int nextChipValue, ref int remainingValue)
         {
-            for (; chipAmount > 0; chipAmount--)
+            for (; currentChipAmount > 0; currentChipAmount--)
             {
-                var potentialRemainingValue = remainingValue - (chipAmount * currentChipValue);
+                var potentialRemainingValue = remainingValue - (currentChipAmount * currentChipValue);
 
                 if (IsDivisibleWithoutRest(nextChipValue, potentialRemainingValue))
                 {
-                    AddPlayerChip(chipAmount, currentChipValue, ref remainingValue);
+                    AddPlayerChip(currentChipAmount, currentChipValue, ref remainingValue);
 
                     return remainingValue == 0;
                 }
             }
 
-            return remainingValue == 0;
+            return false;
         }
 
         private void AddPlayerChip(int chipAmount, int chipValue, ref int remainingValue)
@@ -76,8 +76,8 @@
             remainingValue -= (chipAmount * chipValue);
         }
 
-        private static bool IsLastChip(int chipValue, Chip nextCaseChip, int remainingValue)
-            => nextCaseChip == null || IsDivisibleWithoutRest(chipValue, remainingValue);
+        private static bool IsLastChip(int amount, int chipValue, Chip nextCaseChip, int remainingValue)
+            => nextCaseChip == null || (ChipsExceedRemainingValue(amount, chipValue, remainingValue) && IsDivisibleWithoutRest(chipValue, remainingValue));
 
         private static bool ChipsExceedRemainingValue(int chipAmount, int chipValue, int remainingValue)
             => (chipAmount * chipValue) >= remainingValue;

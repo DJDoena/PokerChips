@@ -79,7 +79,7 @@
 
             if (remainingValue != 0)
             {
-                MessageBox.Show("Number of chips + value of chips is insufficient for these players!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
+                MessageBox.Show("Number of chips + value of chips is insufficient for these players!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 
                 return;
             }
@@ -145,11 +145,11 @@
 
             for (int index = 0; index < caseChips.Count; index++)
             {
-                var caseChip = caseChips[index];
+                var currentCaseChip = caseChips[index];
 
                 var nextCaseChip = (index < caseChips.Count - 1) ? caseChips[index + 1] : null;
 
-                if (chipCalculator.AddPlayerChip(caseChip, nextCaseChip, ref remainingValue))
+                if (chipCalculator.AddPlayerChip(currentCaseChip, nextCaseChip, ref remainingValue))
                 {
                     break;
                 }
