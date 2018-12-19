@@ -99,8 +99,10 @@ function addSelectCellNode(rowNode, id)
 {
     let cellNode = rowNode.insertCell(-1);
     cellNode.setAttribute("style", "text-align: center;");
+
     let selectNode = document.createElement("SELECT");
     setId(selectNode, id);
+
     cellNode.appendChild(selectNode);
 
     return selectNode;
@@ -109,8 +111,10 @@ function addSelectCellNode(rowNode, id)
 function addCaseRow(caseChipIndex)
 {
     let rowNode = getById("caseTable").insertRow(-1);
+
     let amountSelectNode = addSelectCellNode(rowNode, "caseChipAmount_" + caseChipIndex);
     addAmountOptions(amountSelectNode);
+
     let valueSelectNode = addSelectCellNode(rowNode, "caseChipValue_" + caseChipIndex);
     addValueOptions(valueSelectNode);
 }
@@ -179,18 +183,6 @@ function createCaseChip(caseChipIndex)
     return new Chip(amount, value);
 }
 
-function createCaseChips()
-{
-    let caseChips = [];
-
-    for(let caseChipIndex = 0; caseChipIndex < NumberOfCaseChipColors; caseChipIndex++)
-    {
-        caseChips.push(createCaseChip(caseChipIndex));
-    }
-
-    return caseChips;
-}
-
 function sortCaseChips(caseChips)
 {
     let resorted = false;
@@ -206,10 +198,25 @@ function sortCaseChips(caseChips)
                 let temp = caseChips[caseChipIndex];
                 caseChips[caseChipIndex] = caseChips[caseChipIndex + 1];
                 caseChips[caseChipIndex + 1] = temp;
+
                 resorted = true;
             }
         }
     }while (resorted === true);
+}
+
+function createCaseChips()
+{
+    let caseChips = [];
+
+    for(let caseChipIndex = 0; caseChipIndex < NumberOfCaseChipColors; caseChipIndex++)
+    {
+        caseChips.push(createCaseChip(caseChipIndex));
+    }
+
+    sortCaseChips(caseChips);
+
+    return caseChips;
 }
 
 function chipsExceedRemainingValue(chipAmount, chipValue, remainingValue)
@@ -301,7 +308,7 @@ function addPlayerChips(caseChips, playerChips, remainingValue)
         let currentCaseChip = caseChips[caseChipIndex];
         let nextCaseChip = null;
 
-        if(caseChipIndex < caseChips.length -1)
+        if(caseChipIndex < caseChips.length - 1)
         {
             nextCaseChip = caseChips[caseChipIndex + 1];
         }
@@ -322,10 +329,12 @@ function addPlayerChipOutput(playerChipIndex, playerChip)
 {
     let rowNode = getById("caseTable").insertRow(-1);
     setId(rowNode, "playerChipRow_" + playerChipIndex);
+
     let amountCellNode = rowNode.insertCell(-1);
     setId(amountCellNode, "playerChipAmountCell_" + playerChipIndex);
     amountCellNode.setAttribute("style", "text-align: center;");
     amountCellNode.innerText = playerChip.getAmount();
+
     let valueCellNode = rowNode.insertCell(-1);
     setId(valueCellNode, "playerChipValueCell_" + playerChipIndex);
     valueCellNode.setAttribute("style", "text-align: center;");
@@ -336,17 +345,14 @@ function addPlayerChipsOutput(playerChips)
 {
     for(let playerChipIndex = 0; playerChipIndex < playerChips.length; playerChipIndex++)
     {
-        let playerChip = playerChips[playerChipIndex];
-
-        addPlayerChipOutput(playerChipIndex, playerChip);
+        addPlayerChipOutput(playerChipIndex, playerChips[playerChipIndex]);
     }
 }
 
 function calulate()
 {
     initPlayerChipsOutput();
-    let caseChips = createCaseChips();
-    sortCaseChips(caseChips);
+    let caseChips = createCaseChips();    
     let playerChips = [];
     let remainingValue = parseInt(getById("stackSize").value);
     remainingValue = addPlayerChips(caseChips, playerChips, remainingValue);
