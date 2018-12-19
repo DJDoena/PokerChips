@@ -61,26 +61,26 @@ function addSelectOption(selectNode, value)
     selectNode.add(optionNode);
 }
 
-function addAmountOptions(amountSelectNode)
+function addAmountOptions(selectNode)
 {
-    addSelectOption(amountSelectNode, 0);
-    addSelectOption(amountSelectNode, 50);
-    addSelectOption(amountSelectNode, 100);
-    addSelectOption(amountSelectNode, 150);
-    addSelectOption(amountSelectNode, 200);
-    addSelectOption(amountSelectNode, 250);
-    addSelectOption(amountSelectNode, 300);
+    addSelectOption(selectNode, 0);
+    addSelectOption(selectNode, 50);
+    addSelectOption(selectNode, 100);
+    addSelectOption(selectNode, 150);
+    addSelectOption(selectNode, 200);
+    addSelectOption(selectNode, 250);
+    addSelectOption(selectNode, 300);
 }
 
-function addValueOptions(valueSelectNode)
+function addValueOptions(selectNode)
 {
-    addSelectOption(valueSelectNode, 0);
-    addSelectOption(valueSelectNode, 25);
-    addSelectOption(valueSelectNode, 50);
-    addSelectOption(valueSelectNode, 100);
-    addSelectOption(valueSelectNode, 200);
-    addSelectOption(valueSelectNode, 500);
-    addSelectOption(valueSelectNode, 1000);
+    addSelectOption(selectNode, 0);
+    addSelectOption(selectNode, 25);
+    addSelectOption(selectNode, 50);
+    addSelectOption(selectNode, 100);
+    addSelectOption(selectNode, 200);
+    addSelectOption(selectNode, 500);
+    addSelectOption(selectNode, 1000);
 }
 
 function addSelectCellNode(rowNode, id)
