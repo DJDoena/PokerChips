@@ -36,6 +36,11 @@ class AddPlayerChipResult
     }
 }
 
+const PokerTable = "pokerTable";
+const PlayerChipRowPrefix = "playerChipRow_";
+const CaseChipAmountPrefix = "caseChipAmount_";
+const CaseChipValuePrefix = "caseChipValue_";
+
 const NumberOfCaseChipColors = 5;
 
 const AmountOption0 = 0;
@@ -110,12 +115,12 @@ function addSelectCellNode(rowNode, id)
 
 function addCaseRow(caseChipIndex)
 {
-    let rowNode = getById("caseTable").insertRow(-1);
+    let rowNode = getById(PokerTable).insertRow(-1);
 
-    let amountSelectNode = addSelectCellNode(rowNode, "caseChipAmount_" + caseChipIndex);
+    let amountSelectNode = addSelectCellNode(rowNode, CaseChipAmountPrefix + caseChipIndex);
     addAmountOptions(amountSelectNode);
 
-    let valueSelectNode = addSelectCellNode(rowNode, "caseChipValue_" + caseChipIndex);
+    let valueSelectNode = addSelectCellNode(rowNode, CaseChipValuePrefix + caseChipIndex);
     addValueOptions(valueSelectNode);
 }
 
@@ -126,8 +131,8 @@ function setCaseDefaults(caseChipIndex, amount, value)
         return;
     }
 
-    getById("caseChipAmount_" + caseChipIndex).value = amount;
-    getById("caseChipValue_" + caseChipIndex).value = value;
+    getById(CaseChipAmountPrefix + caseChipIndex).value = amount;
+    getById(CaseChipValuePrefix + caseChipIndex).value = value;
 }
 
 function setOneNormal500Case()
@@ -159,11 +164,11 @@ function setTwo500Case()
 
 function initPlayerChipOutput(playerChipIndex)
 {
-    let rowNode = getById("playerChipRow_" + playerChipIndex);
+    let rowNode = getById(PlayerChipRowPrefix + playerChipIndex);
 
     if(rowNode !== null)
     {
-        getById("caseTable").deleteRow(rowNode.rowIndex);
+        getById(PokerTable).deleteRow(rowNode.rowIndex);
     }
 }
 
@@ -177,8 +182,8 @@ function initPlayerChipsOutput()
 
 function createCaseChip(caseChipIndex)
 {
-    let amount = parseInt(getById("caseChipAmount_" + caseChipIndex).value);
-    let value = parseInt(getById("caseChipValue_" + caseChipIndex).value);
+    let amount = parseInt(getById(CaseChipAmountPrefix + caseChipIndex).value);
+    let value = parseInt(getById(CaseChipValuePrefix + caseChipIndex).value);
     
     return new Chip(amount, value);
 }
@@ -327,16 +332,14 @@ function addPlayerChips(caseChips, playerChips, remainingValue)
 
 function addPlayerChipOutput(playerChipIndex, playerChip)
 {
-    let rowNode = getById("caseTable").insertRow(-1);
-    setId(rowNode, "playerChipRow_" + playerChipIndex);
+    let rowNode = getById(PokerTable).insertRow(-1);
+    setId(rowNode, PlayerChipRowPrefix + playerChipIndex);
 
     let amountCellNode = rowNode.insertCell(-1);
-    setId(amountCellNode, "playerChipAmountCell_" + playerChipIndex);
     amountCellNode.setAttribute("style", "text-align: center;");
     amountCellNode.innerText = playerChip.getAmount();
 
     let valueCellNode = rowNode.insertCell(-1);
-    setId(valueCellNode, "playerChipValueCell_" + playerChipIndex);
     valueCellNode.setAttribute("style", "text-align: center;");
     valueCellNode.innerText = playerChip.getValue();
 }
