@@ -19,11 +19,10 @@ class Chip
 
 class AddPlayerChipResult
 {
-    constructor(isFinished, remainingValue, nextPlayerChipIndex)
+    constructor(isFinished, remainingValue)
     {
         this._isFinished = isFinished;
         this._remainingValue = parseInt(remainingValue);
-        this._nextPlayerChipIndex = parseInt(nextPlayerChipIndex);
     }
 
     getIsFinished()
@@ -35,16 +34,29 @@ class AddPlayerChipResult
     {
         return this._remainingValue;
     }
-
-    getNextPlayerChipIndex()
-    {
-        return this._nextPlayerChipIndex;
-    }
 }
+
+const NumberOfCaseChipColors = 5;
+
+const AmountOption0 = 0;
+const AmountOption50 = 50;
+const AmountOption100 = 100;
+const AmountOption150 = 150;
+const AmountOption200 = 200;
+const AmountOption250 = 250;
+const AmountOption300 = 300;
+
+const ValueOption0 = 0;
+const ValueOption25 = 25;
+const ValueOption50 = 50;
+const ValueOption100 = 100;
+const ValueOption200 = 200;
+const ValueOption500 = 500;
+const ValueOption1000 = 1000;
 
 function getById(id)
 {
-    var node = document.getElementById(id);
+    let node = document.getElementById(id);
 
     return node;
 }
@@ -56,89 +68,94 @@ function setId(node, id)
 
 function addSelectOption(selectNode, value)
 {
-    var optionNode = document.createElement("OPTION");
+    let optionNode = document.createElement("OPTION");
     optionNode.innerText = value;
     selectNode.add(optionNode);
 }
 
 function addAmountOptions(selectNode)
 {
-    addSelectOption(selectNode, 0);
-    addSelectOption(selectNode, 50);
-    addSelectOption(selectNode, 100);
-    addSelectOption(selectNode, 150);
-    addSelectOption(selectNode, 200);
-    addSelectOption(selectNode, 250);
-    addSelectOption(selectNode, 300);
+    addSelectOption(selectNode, AmountOption0);
+    addSelectOption(selectNode, AmountOption50);
+    addSelectOption(selectNode, AmountOption100);
+    addSelectOption(selectNode, AmountOption150);
+    addSelectOption(selectNode, AmountOption200);
+    addSelectOption(selectNode, AmountOption250);
+    addSelectOption(selectNode, AmountOption300);
 }
 
 function addValueOptions(selectNode)
 {
-    addSelectOption(selectNode, 0);
-    addSelectOption(selectNode, 25);
-    addSelectOption(selectNode, 50);
-    addSelectOption(selectNode, 100);
-    addSelectOption(selectNode, 200);
-    addSelectOption(selectNode, 500);
-    addSelectOption(selectNode, 1000);
+    addSelectOption(selectNode, ValueOption0);
+    addSelectOption(selectNode, ValueOption25);
+    addSelectOption(selectNode, ValueOption50);
+    addSelectOption(selectNode, ValueOption100);
+    addSelectOption(selectNode, ValueOption200);
+    addSelectOption(selectNode, ValueOption500);
+    addSelectOption(selectNode, ValueOption1000);
 }
 
 function addSelectCellNode(rowNode, id)
 {
-    var cellNode = rowNode.insertCell(-1);
+    let cellNode = rowNode.insertCell(-1);
     cellNode.setAttribute("style", "text-align: center;");
-    var selectNode = document.createElement("SELECT");
+    let selectNode = document.createElement("SELECT");
     setId(selectNode, id);
     cellNode.appendChild(selectNode);
 
     return selectNode;
 }
 
-function addCaseRow(caseIndex)
+function addCaseRow(caseChipIndex)
 {
-    var rowNode = getById("caseTable").insertRow(-1);
-    var amountSelectNode = addSelectCellNode(rowNode, "caseChipAmount_" + caseIndex);
+    let rowNode = getById("caseTable").insertRow(-1);
+    let amountSelectNode = addSelectCellNode(rowNode, "caseChipAmount_" + caseChipIndex);
     addAmountOptions(amountSelectNode);
-    var valueSelectNode = addSelectCellNode(rowNode, "caseChipValue_" + caseIndex);
+    let valueSelectNode = addSelectCellNode(rowNode, "caseChipValue_" + caseChipIndex);
     addValueOptions(valueSelectNode);
 }
 
-function setCaseDefaults(caseIndex, amount, value)
+function setCaseDefaults(caseChipIndex, amount, value)
 {
-    getById("caseChipAmount_" + caseIndex).value = amount;
-    getById("caseChipValue_" + caseIndex).value = value;
+    if(caseChipIndex >= NumberOfCaseChipColors)
+    {
+        return;
+    }
+
+    getById("caseChipAmount_" + caseChipIndex).value = amount;
+    getById("caseChipValue_" + caseChipIndex).value = value;
 }
 
 function setOneNormal500Case()
 {
-    setCaseDefaults(0, 150, 25);
-    setCaseDefaults(1, 150, 100);
-    setCaseDefaults(2, 100, 200);
-    setCaseDefaults(3, 0, 0);
-    setCaseDefaults(4, 0, 0);
+    setCaseDefaults(0, AmountOption150, ValueOption25);
+    setCaseDefaults(1, AmountOption150, ValueOption100);
+    setCaseDefaults(2, AmountOption100, ValueOption200);
+    setCaseDefaults(3, AmountOption0, ValueOption0);
+    setCaseDefaults(4, AmountOption0, ValueOption0);
 }
 
 function setOneFull500Case()
 {
-    setCaseDefaults(0, 150, 25);
-    setCaseDefaults(1, 150, 100);
-    setCaseDefaults(2, 100, 200);
-    setCaseDefaults(3, 50, 500);
-    setCaseDefaults(4, 50, 1000);
+    setCaseDefaults(0, AmountOption150, ValueOption25);
+    setCaseDefaults(1, AmountOption150, ValueOption100);
+    setCaseDefaults(2, AmountOption100, ValueOption200);
+    setCaseDefaults(3, AmountOption50, ValueOption500);
+    setCaseDefaults(4, AmountOption50, ValueOption1000);
 }
 
 function setTwo500Case()
 {
-    setCaseDefaults(0, 300, 25);
-    setCaseDefaults(1, 300, 100);
-    setCaseDefaults(2, 200, 200);
-    setCaseDefaults(3, 100, 500);
-    setCaseDefaults(4, 100, 1000);
+    setCaseDefaults(0, AmountOption300, ValueOption25);
+    setCaseDefaults(1, AmountOption300, ValueOption100);
+    setCaseDefaults(2, AmountOption200, ValueOption200);
+    setCaseDefaults(3, AmountOption100, ValueOption500);
+    setCaseDefaults(4, AmountOption100, ValueOption1000);
 }
 
 function initPlayerChipOutput(playerChipIndex)
 {
-    var rowNode = getById("playerChipRow_" + playerChipIndex);
+    let rowNode = getById("playerChipRow_" + playerChipIndex);
 
     if(rowNode !== null)
     {
@@ -148,35 +165,47 @@ function initPlayerChipOutput(playerChipIndex)
 
 function initPlayerChipsOutput()
 {
-    for(var playerChipIndex = 0; playerChipIndex < 6; playerChipIndex++)
+    for(let playerChipIndex = 0; playerChipIndex < NumberOfCaseChipColors; playerChipIndex++)
     {
         initPlayerChipOutput(playerChipIndex);
     }
 }
 
-function createCaseChip(caseIndex)
+function createCaseChip(caseChipIndex)
 {
-    var amount = parseInt(getById("caseChipAmount_" + caseIndex).value);
-    var value = parseInt(getById("caseChipValue_" + caseIndex).value);
+    let amount = parseInt(getById("caseChipAmount_" + caseChipIndex).value);
+    let value = parseInt(getById("caseChipValue_" + caseChipIndex).value);
     
     return new Chip(amount, value);
 }
 
+function createCaseChips()
+{
+    let caseChips = [];
+
+    for(let caseChipIndex = 0; caseChipIndex < NumberOfCaseChipColors; caseChipIndex++)
+    {
+        caseChips.push(createCaseChip(caseChipIndex));
+    }
+
+    return caseChips;
+}
+
 function sortCaseChips(caseChips)
 {
-    var resorted;
+    let resorted = false;
 
     do
     {
         resorted = false;
 
-        for(var caseIndex = 0; caseIndex < caseChips.length - 2; caseIndex++)
+        for(let caseChipIndex = 0; caseChipIndex < caseChips.length - 2; caseChipIndex++)
         {
-            if(caseChips[caseIndex].getValue() > caseChips[caseIndex + 1].getValue())
+            if(caseChips[caseChipIndex].getValue() > caseChips[caseChipIndex + 1].getValue())
             {
-                var temp = caseChips[caseIndex];
-                caseChips[caseIndex] = caseChips[caseIndex + 1];
-                caseChips[caseIndex + 1] = temp;
+                let temp = caseChips[caseChipIndex];
+                caseChips[caseChipIndex] = caseChips[caseChipIndex + 1];
+                caseChips[caseChipIndex + 1] = temp;
                 resorted = true;
             }
         }
@@ -185,16 +214,16 @@ function sortCaseChips(caseChips)
 
 function chipsExceedRemainingValue(chipAmount, chipValue, remainingValue)
 {
-    var result = (chipAmount * chipValue) >= remainingValue;
+    let result = (chipAmount * chipValue) >= remainingValue;
 
     return result;
 }
 
 function getAmount(caseChipAmount, chipValue, remainingValue)
 {
-    var amountPlayers = parseInt(getById("amountPlayers").value);
-    var chipAmount = Math.floor(caseChipAmount / amountPlayers);;
-    var maxChips = parseInt(getById("maxChips").value);
+    let amountPlayers = parseInt(getById("amountPlayers").value);
+    let chipAmount = Math.floor(caseChipAmount / amountPlayers);;
+    let maxChips = parseInt(getById("maxChips").value);
 
     if(chipAmount > maxChips)
     {
@@ -211,77 +240,74 @@ function getAmount(caseChipAmount, chipValue, remainingValue)
 
 function isDivisibleWithoutRest(chipValue, remainingValue)
 {
-    var result = (remainingValue % chipValue) === 0;
+    let result = (remainingValue % chipValue) === 0;
 
     return result;
 }
 
 function isLastChip(amount, chipValue, nextCaseChip, remainingValue)
 {
-    var result = (nextCaseChip === null) || ((chipsExceedRemainingValue(amount, chipValue, remainingValue) === true)  &&  (isDivisibleWithoutRest(chipValue, remainingValue) === true))
+    let result = (nextCaseChip === null) || ((chipsExceedRemainingValue(amount, chipValue, remainingValue) === true)  &&  (isDivisibleWithoutRest(chipValue, remainingValue) === true))
     
     return result;
 }
 
-function addPlayerChip(chipAmount, chipValue, playerChips, playerChipIndex, remainingValue)
+function addPlayerChip(chipAmount, chipValue, playerChips, remainingValue)
 {
-    playerChips[playerChipIndex] = new Chip(chipAmount, chipValue);
-    remainingValue = remainingValue - (chipAmount * chipValue);
+    playerChips.push(new Chip(chipAmount, chipValue));
+    remainingValue -= (chipAmount * chipValue);
     
-    return new AddPlayerChipResult(remainingValue === 0, remainingValue, playerChipIndex + 1); 
+    return new AddPlayerChipResult(remainingValue === 0, remainingValue); 
 }
 
-function tryAddPlayerChipWithConvenientValueForNextChip(currentChipAmount, currentChipValue, nextChipValue, playerChips, playerChipIndex, remainingValue)
+function tryAddPlayerChipWithConvenientValueForNextChip(currentChipAmount, currentChipValue, nextChipValue, playerChips, remainingValue)
 {
     for(; currentChipAmount > 0; currentChipAmount--)
     {
-        var potentialRemainingValue = remainingValue - (currentChipAmount * currentChipValue);
+        let potentialRemainingValue = remainingValue - (currentChipAmount * currentChipValue);
 
         if(isDivisibleWithoutRest(nextChipValue, potentialRemainingValue))
         {
-            var result = addPlayerChip(currentChipAmount, currentChipValue, playerChips, playerChipIndex, remainingValue);
+            let result = addPlayerChip(currentChipAmount, currentChipValue, playerChips, remainingValue);
 
             return result;
         }
     }
 
-    return new AddPlayerChipResult(false, remainingValue, playerChipIndex);
+    return new AddPlayerChipResult(false, remainingValue);
 }
 
-function tryAddPlayerChip(currentCaseChip, nextCaseChip, playerChips, playerChipIndex, remainingValue)
+function tryAddPlayerChip(currentCaseChip, nextCaseChip, playerChips, remainingValue)
 {
-    var chipValue = currentCaseChip.getValue();                
-    var amount = getAmount(currentCaseChip.getAmount(), chipValue, remainingValue);
+    let chipValue = currentCaseChip.getValue();                
+    let amount = getAmount(currentCaseChip.getAmount(), chipValue, remainingValue);
     
     if(isLastChip(amount, chipValue, nextCaseChip, remainingValue) === true)
     {
-        var result = addPlayerChip(amount, chipValue, playerChips, playerChipIndex, remainingValue);
+        let result = addPlayerChip(amount, chipValue, playerChips, remainingValue);
 
         return result;
     }
 
-    var result = tryAddPlayerChipWithConvenientValueForNextChip(amount, chipValue, nextCaseChip.getValue(), playerChips, playerChipIndex, remainingValue);
+    let result = tryAddPlayerChipWithConvenientValueForNextChip(amount, chipValue, nextCaseChip.getValue(), playerChips, remainingValue);
 
     return result;
 }
 
 function addPlayerChips(caseChips, playerChips, remainingValue)
 {
-    var playerChipIndex = 0;
-
-    for(var caseChipIndex = 0; caseChipIndex < caseChips.length; caseChipIndex++)
+    for(let caseChipIndex = 0; caseChipIndex < caseChips.length; caseChipIndex++)
     {
-        var currentCaseChip = caseChips[caseChipIndex];
-        var nextCaseChip = null;
+        let currentCaseChip = caseChips[caseChipIndex];
+        let nextCaseChip = null;
 
         if(caseChipIndex < caseChips.length -1)
         {
             nextCaseChip = caseChips[caseChipIndex + 1];
         }
 
-        var result = tryAddPlayerChip(currentCaseChip, nextCaseChip, playerChips, playerChipIndex, remainingValue);
+        let result = tryAddPlayerChip(currentCaseChip, nextCaseChip, playerChips, remainingValue);
         remainingValue = result.getRemainingValue();
-        playerChipIndex = result.getNextPlayerChipIndex();
 
         if(result.getIsFinished() === true)
         {
@@ -294,13 +320,13 @@ function addPlayerChips(caseChips, playerChips, remainingValue)
 
 function addPlayerChipOutput(playerChipIndex, playerChip)
 {
-    var rowNode = getById("caseTable").insertRow(-1);
+    let rowNode = getById("caseTable").insertRow(-1);
     setId(rowNode, "playerChipRow_" + playerChipIndex);
-    var amountCellNode = rowNode.insertCell(-1);
+    let amountCellNode = rowNode.insertCell(-1);
     setId(amountCellNode, "playerChipAmountCell_" + playerChipIndex);
     amountCellNode.setAttribute("style", "text-align: center;");
     amountCellNode.innerText = playerChip.getAmount();
-    var valueCellNode = rowNode.insertCell(-1);
+    let valueCellNode = rowNode.insertCell(-1);
     setId(valueCellNode, "playerChipValueCell_" + playerChipIndex);
     valueCellNode.setAttribute("style", "text-align: center;");
     valueCellNode.innerText = playerChip.getValue();
@@ -308,14 +334,9 @@ function addPlayerChipOutput(playerChipIndex, playerChip)
 
 function addPlayerChipsOutput(playerChips)
 {
-    for(var playerChipIndex = 0; playerChipIndex < playerChips.length; playerChipIndex++)
+    for(let playerChipIndex = 0; playerChipIndex < playerChips.length; playerChipIndex++)
     {
-        var playerChip = playerChips[playerChipIndex];
-
-        if(playerChip === null)
-        {
-            continue;
-        }
+        let playerChip = playerChips[playerChipIndex];
 
         addPlayerChipOutput(playerChipIndex, playerChip);
     }
@@ -324,15 +345,15 @@ function addPlayerChipsOutput(playerChips)
 function calulate()
 {
     initPlayerChipsOutput();
-    var caseChips = [ createCaseChip(0), createCaseChip(1), createCaseChip(2), createCaseChip(3), createCaseChip(4) ];
+    let caseChips = createCaseChips();
     sortCaseChips(caseChips);
-    var playerChips = [ null, null, null, null, null ];
-    var remainingValue = parseInt(getById("stackSize").value);
+    let playerChips = [];
+    let remainingValue = parseInt(getById("stackSize").value);
     remainingValue = addPlayerChips(caseChips, playerChips, remainingValue);
 
     if (remainingValue !== 0)
     {
-        alert("Number of chips + value of chips is insufficient for these players!");
+        alert("Number of chips times value of chips is insufficient for these players!");
 
         return;
     }
