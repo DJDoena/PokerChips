@@ -100,7 +100,7 @@ function addValueOptions(selectNode)
     addSelectOption(selectNode, ValueOption1000);
 }
 
-function addSelectCellNode(rowNode, id)
+function addSelectCell(rowNode, id)
 {
     let cellNode = rowNode.insertCell(-1);
     cellNode.setAttribute("style", "text-align: center;");
@@ -117,10 +117,10 @@ function addCaseRow(caseChipIndex)
 {
     let rowNode = getById(PokerTable).insertRow(-1);
 
-    let amountSelectNode = addSelectCellNode(rowNode, CaseChipAmountPrefix + caseChipIndex);
+    let amountSelectNode = addSelectCell(rowNode, CaseChipAmountPrefix + caseChipIndex);
     addAmountOptions(amountSelectNode);
 
-    let valueSelectNode = addSelectCellNode(rowNode, CaseChipValuePrefix + caseChipIndex);
+    let valueSelectNode = addSelectCell(rowNode, CaseChipValuePrefix + caseChipIndex);
     addValueOptions(valueSelectNode);
 }
 
@@ -192,6 +192,7 @@ function sortCaseChips(caseChips)
 {
     let resorted = false;
 
+    //good ol'fashioned bubble sort
     do
     {
         resorted = false;
@@ -306,8 +307,10 @@ function tryAddPlayerChip(currentCaseChip, nextCaseChip, playerChips, remainingV
     return result;
 }
 
-function addPlayerChips(caseChips, playerChips, remainingValue)
+function addPlayerChips(caseChips, playerChips, stackSize)
 {
+    let remainingValue = stackSize;
+
     for(let caseChipIndex = 0; caseChipIndex < caseChips.length; caseChipIndex++)
     {
         let currentCaseChip = caseChips[caseChipIndex];
@@ -357,8 +360,8 @@ function calulate()
     initPlayerChipsOutput();
     let caseChips = createCaseChips();    
     let playerChips = [];
-    let remainingValue = parseInt(getById("stackSize").value);
-    remainingValue = addPlayerChips(caseChips, playerChips, remainingValue);
+    let stackSize = parseInt(getById("stackSize").value);
+    let remainingValue = addPlayerChips(caseChips, playerChips, stackSize);
 
     if (remainingValue !== 0)
     {

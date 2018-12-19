@@ -6,7 +6,7 @@
         <meta name="viewport" content="width=device-width; initial-scale=1" />
         <script src="PokerChips.js"></script>
     </head>
-    <body>
+    <body style="font-family: Verdana, Geneva, sans-serif;">
         <form>
             <table id="pokerTable" style="border: 0px;">
                 <tr>
@@ -38,7 +38,7 @@
                     <th>Chip value:</th>
                 </tr>
                 <script>
-                    for(var caseIndex = 0; caseIndex < NumberOfCaseChipColors; caseIndex++)
+                    for(let caseIndex = 0; caseIndex < NumberOfCaseChipColors; caseIndex++)
                     {
                         addCaseRow(caseIndex);
                     }
