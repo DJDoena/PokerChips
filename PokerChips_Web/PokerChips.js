@@ -50,14 +50,26 @@ const AmountOption150 = 150;
 const AmountOption200 = 200;
 const AmountOption250 = 250;
 const AmountOption300 = 300;
+const AmountOption500 = 500;
+const AmountOption1000 = 1000;
 
 const ValueOption0 = 0;
+const ValueOption10 = 10;
 const ValueOption25 = 25;
 const ValueOption50 = 50;
 const ValueOption100 = 100;
 const ValueOption200 = 200;
+const ValueOption250 = 250;
 const ValueOption500 = 500;
 const ValueOption1000 = 1000;
+const ValueOption2000 = 2000;
+const ValueOption2500 = 2500;
+const ValueOption5000 = 5000;
+const ValueOption10000 = 10000;
+const ValueOption20000 = 20000;
+const ValueOption25000 = 25000;
+const ValueOption50000 = 50000;
+const ValueOption100000 = 100000;
 
 function getById(id)
 {
@@ -87,17 +99,29 @@ function addAmountOptions(selectNode)
     addSelectOption(selectNode, AmountOption200);
     addSelectOption(selectNode, AmountOption250);
     addSelectOption(selectNode, AmountOption300);
+    addSelectOption(selectNode, AmountOption500);
+    addSelectOption(selectNode, AmountOption1000);
 }
 
 function addValueOptions(selectNode)
 {
     addSelectOption(selectNode, ValueOption0);
+    addSelectOption(selectNode, ValueOption10);
     addSelectOption(selectNode, ValueOption25);
     addSelectOption(selectNode, ValueOption50);
     addSelectOption(selectNode, ValueOption100);
     addSelectOption(selectNode, ValueOption200);
+    addSelectOption(selectNode, ValueOption250);
     addSelectOption(selectNode, ValueOption500);
     addSelectOption(selectNode, ValueOption1000);
+    addSelectOption(selectNode, ValueOption2000);
+    addSelectOption(selectNode, ValueOption2500);
+    addSelectOption(selectNode, ValueOption5000);
+    addSelectOption(selectNode, ValueOption10000);
+    addSelectOption(selectNode, ValueOption20000);
+    addSelectOption(selectNode, ValueOption25000);
+    addSelectOption(selectNode, ValueOption50000);
+    addSelectOption(selectNode, ValueOption100000);
 }
 
 function addSelectCell(rowNode, id)
@@ -174,6 +198,8 @@ function initPlayerChipOutput(playerChipIndex)
 
 function initPlayerChipsOutput()
 {
+    initPlayerChipOutput("H");
+
     for(let playerChipIndex = 0; playerChipIndex < NumberOfCaseChipColors; playerChipIndex++)
     {
         initPlayerChipOutput(playerChipIndex);
@@ -251,7 +277,7 @@ function getAmount(caseChipAmount, chipValue, remainingValue)
     return chipAmount;
 }
 
-function isDivisibleWithoutRest(chipValue, remainingValue)
+function isDivisibleWithoutRemainder(chipValue, remainingValue)
 {
     let result = (remainingValue % chipValue) === 0;
 
@@ -260,7 +286,7 @@ function isDivisibleWithoutRest(chipValue, remainingValue)
 
 function isLastChip(amount, chipValue, nextCaseChip, remainingValue)
 {
-    let result = (nextCaseChip === null) || ((chipsExceedRemainingValue(amount, chipValue, remainingValue) === true)  &&  (isDivisibleWithoutRest(chipValue, remainingValue) === true))
+    let result = (nextCaseChip === null) || ((chipsExceedRemainingValue(amount, chipValue, remainingValue) === true)  &&  (isDivisibleWithoutRemainder(chipValue, remainingValue) === true))
     
     return result;
 }
@@ -279,7 +305,7 @@ function tryAddPlayerChipWithConvenientValueForNextChip(currentChipAmount, curre
     {
         let potentialRemainingValue = remainingValue - (currentChipAmount * currentChipValue);
 
-        if(isDivisibleWithoutRest(nextChipValue, potentialRemainingValue))
+        if(isDivisibleWithoutRemainder(nextChipValue, potentialRemainingValue))
         {
             let result = addPlayerChip(currentChipAmount, currentChipValue, playerChips, remainingValue);
 
@@ -314,6 +340,7 @@ function addPlayerChips(caseChips, playerChips, stackSize)
     for(let caseChipIndex = 0; caseChipIndex < caseChips.length; caseChipIndex++)
     {
         let currentCaseChip = caseChips[caseChipIndex];
+
         let nextCaseChip = null;
 
         if(caseChipIndex < caseChips.length - 1)
@@ -355,7 +382,7 @@ function addPlayerChipsOutput(playerChips)
     }
 }
 
-function calulate()
+function calulate(isGerman)
 {
     initPlayerChipsOutput();
     let caseChips = createCaseChips();    
@@ -363,12 +390,39 @@ function calulate()
     let stackSize = parseInt(getById("stackSize").value);
     let remainingValue = addPlayerChips(caseChips, playerChips, stackSize);
 
-    if (remainingValue !== 0)
+    if(remainingValue !== 0)
     {
-        alert("Number of chips times value of chips is insufficient for these players!");
+        if(isGerman === true)
+        {
+            alert("Die Anzahl der Chips mal den Wert der Chips ist nicht ausreichend für die Anzahl der Spieler!");
+        }
+        else
+        {
+            alert("Number of chips times value of chips is insufficient for the number of players!");
+        }
 
         return;
     }
+
+    let rowNode = getById(PokerTable).insertRow(-1);
+    setId(rowNode, PlayerChipRowPrefix + "H");
+
+    let amountCellNode = rowNode.insertCell(-1);
+    amountCellNode.setAttribute("style", "text-align: center; font-weight: bold;");
+
+    let valueCellNode = rowNode.insertCell(-1);
+    valueCellNode.setAttribute("style", "text-align: center; font-weight: bold;");
+
+    if(isGerman === true)
+    {
+        amountCellNode.innerText = "Anzahl Chips je Spieler:";
+        valueCellNode.innerText = "Chip Wert:";
+    }
+    else
+    {
+        amountCellNode.innerText = "Amount of chips per player:";
+        valueCellNode.innerText = "Chip value:";
+    }   
 
     addPlayerChipsOutput(playerChips);
 }

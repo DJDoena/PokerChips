@@ -1,41 +1,41 @@
-<!DOCTYPE HTML>
-<html lang="de">
+<!DOCTYPE html>
+<html lang="en">
     <head>
         <title>Poker Chips</title>
         <meta http-equiv="content-type" content="text/html; charset=utf-8" />
         <meta name="viewport" content="width=device-width; initial-scale=1" />
-        <script src="PokerChips.js"></script>
+        <script src="../PokerChips.js"></script>
     </head>
     <body style="font-family: Verdana, Geneva, sans-serif;">
         <form>
             <table id="pokerTable" style="border: 0px;">
                 <tr>
-                    <td>Spieler:</td>
+                    <td>Players:</td>
                     <td><input type="number" id="amountPlayers" min="2" max="10" value="5" /></td>
                 </tr>
                 <tr>
-                    <td>Stack-Gr&ouml;&szlig;e je Spieler:</td>
+                    <td>Stack size:</td>
                     <td><input type="number" id="stackSize" min="1000" max="10000" value="5000" /></td>
                 </tr>
                 <tr>
-                    <td>Maximum Chips je Wert:</td>
+                    <td>Maximum chips per value:</td>
                     <td><input type="number" id="maxChips" min="10" max="300" value="20" /></td>
                 </tr>
                 <tr>
-                    <td><input type="button" value="Koffer laden &quot;Ein 500er (normal)&quot;" onClick="setOneNormal500Case();" style="width: 95%;" /></td>
+                    <td><input type="button" value="Load case &quot;One 500 (normal)&quot;" onClick="setOneNormal500Case();" style="width: 95%;" /></td>
                     <td></td>
                 </tr>
                 <tr>
-                    <td><input type="button" value="Koffer laden &quot;Ein 500er (voll)&quot;" onClick="setOneFull500Case();" style="width: 95%;" /></td>
+                    <td><input type="button" value="Load case &quot;One 500 (full)&quot;" onClick="setOneFull500Case();" style="width: 95%;" /></td>
                     <td></td>
                 </tr>
                 <tr>
-                    <td><input type="button" value="Koffer laden &quot;Zwei 500er (voll)&quot;" onClick="setTwo500Case();" style="width: 95%;" /></td>
+                    <td><input type="button" value="Load case &quot;Two 500s (full)&quot;" onClick="setTwo500Case();" style="width: 95%;" /></td>
                     <td></td>
                 </tr>
                 <tr>
-                    <th>Gesamt Chips im Koffer je Wert:</th>
-                    <th>Chip Wert:</th>
+                    <th>Total amount of chips in case:</th>
+                    <th>Chip value:</th>
                 </tr>
                 <script>
                     for(let caseIndex = 0; caseIndex < NumberOfCaseChipColors; caseIndex++)
@@ -44,13 +44,13 @@
                     }
                 </script>
                 <tr>
-                    <td><input type="button" value="Berechnen" onClick="calulate(true);" style="width: 95%;" /></td>
+                    <td><input type="button" value="Calculate" onClick="calulate(false);" style="width: 95%;" /></td>
                     <td></td>
                 </tr>
             </table>
         </form>
 		<p>
-			<a href="en/index.html">in English</a>
+			<a href="../index.html">auf Deutsch</a>
 		</p>
     </body>
 </html>
