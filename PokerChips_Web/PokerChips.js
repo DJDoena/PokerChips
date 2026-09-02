@@ -253,14 +253,9 @@ const Translations =
     }
 };
 
-function getTranslations(isGerman)
+function calculate(languageCode)
 {
-    return isGerman === true ? Translations.de : Translations.en;
-}
-
-function calculate(isGerman)
-{
-    let translations = getTranslations(isGerman);
+    let translations = Translations[languageCode] || Translations.en;
 
     initPlayerChipsOutput();
     let caseChips = createCaseChips();

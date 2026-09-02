@@ -12,6 +12,8 @@ internal partial class MainForm : Form
     {
         this.InitializeComponent();
 
+        this.Icon = Resource.DJDSOFT;
+
         _amountComboBoxes = new List<ComboBox>(ChipColors);
         _valueComboBoxes = new List<ComboBox>(ChipColors);
 

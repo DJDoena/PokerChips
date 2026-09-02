@@ -29,7 +29,6 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
@@ -38,52 +37,57 @@
             this.PlayersUpDown = new System.Windows.Forms.NumericUpDown();
             this.MaxChipsUpDown = new System.Windows.Forms.NumericUpDown();
             this.label5 = new System.Windows.Forms.Label();
-            this.MainMenu = new System.Windows.Forms.MainMenu();
+            this.MainMenu = new System.Windows.Forms.MainMenu(this.components);
             this.LoadMenu = new System.Windows.Forms.MenuItem();
             this.OneNormal500Menu = new System.Windows.Forms.MenuItem();
             this.OneFull500Menu = new System.Windows.Forms.MenuItem();
             this.Two500Menu = new System.Windows.Forms.MenuItem();
             this.CalculateMenu = new System.Windows.Forms.MenuItem();
-            //((System.ComponentModel.ISupportInitialize)(this.SummeUpDown)).BeginInit();
-            //((System.ComponentModel.ISupportInitialize)(this.SpielerUpDown)).BeginInit();
-            //((System.ComponentModel.ISupportInitialize)(this.MaxChipsUpDown)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.SumUpDown)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.PlayersUpDown)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.MaxChipsUpDown)).BeginInit();
             this.SuspendLayout();
             // 
             // label1
             // 
-            this.label1.Location = new System.Drawing.Point(3, 5);
+            this.label1.Location = new System.Drawing.Point(4, 6);
+            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(100, 20);
+            this.label1.Size = new System.Drawing.Size(125, 25);
             this.label1.TabIndex = 23;
             this.label1.Text = "Players:";
             // 
             // label2
             // 
-            this.label2.Location = new System.Drawing.Point(3, 84);
+            this.label2.Location = new System.Drawing.Point(4, 105);
+            this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(100, 20);
+            this.label2.Size = new System.Drawing.Size(125, 25);
             this.label2.TabIndex = 22;
             this.label2.Text = "Chip Count:";
             // 
             // label3
             // 
-            this.label3.Location = new System.Drawing.Point(137, 84);
+            this.label3.Location = new System.Drawing.Point(171, 105);
+            this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(100, 20);
+            this.label3.Size = new System.Drawing.Size(125, 25);
             this.label3.TabIndex = 21;
             this.label3.Text = "Chip Value:";
             // 
             // label4
             // 
-            this.label4.Location = new System.Drawing.Point(3, 33);
+            this.label4.Location = new System.Drawing.Point(4, 41);
+            this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(100, 20);
+            this.label4.Size = new System.Drawing.Size(125, 25);
             this.label4.TabIndex = 20;
             this.label4.Text = "Stack Size:";
             // 
-            // SummeUpDown
+            // SumUpDown
             // 
-            this.SumUpDown.Location = new System.Drawing.Point(137, 31);
+            this.SumUpDown.Location = new System.Drawing.Point(171, 39);
+            this.SumUpDown.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.SumUpDown.Maximum = new decimal(new int[] {
             10000,
             0,
@@ -94,8 +98,8 @@
             0,
             0,
             0});
-            this.SumUpDown.Name = "SummeUpDown";
-            this.SumUpDown.Size = new System.Drawing.Size(100, 20);
+            this.SumUpDown.Name = "SumUpDown";
+            this.SumUpDown.Size = new System.Drawing.Size(125, 22);
             this.SumUpDown.TabIndex = 9;
             this.SumUpDown.Value = new decimal(new int[] {
             5000,
@@ -103,9 +107,10 @@
             0,
             0});
             // 
-            // SpielerUpDown
+            // PlayersUpDown
             // 
-            this.PlayersUpDown.Location = new System.Drawing.Point(137, 3);
+            this.PlayersUpDown.Location = new System.Drawing.Point(171, 4);
+            this.PlayersUpDown.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.PlayersUpDown.Maximum = new decimal(new int[] {
             10,
             0,
@@ -116,8 +121,8 @@
             0,
             0,
             0});
-            this.PlayersUpDown.Name = "SpielerUpDown";
-            this.PlayersUpDown.Size = new System.Drawing.Size(100, 20);
+            this.PlayersUpDown.Name = "PlayersUpDown";
+            this.PlayersUpDown.Size = new System.Drawing.Size(125, 22);
             this.PlayersUpDown.TabIndex = 14;
             this.PlayersUpDown.Value = new decimal(new int[] {
             5,
@@ -127,7 +132,8 @@
             // 
             // MaxChipsUpDown
             // 
-            this.MaxChipsUpDown.Location = new System.Drawing.Point(137, 59);
+            this.MaxChipsUpDown.Location = new System.Drawing.Point(171, 74);
+            this.MaxChipsUpDown.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.MaxChipsUpDown.Maximum = new decimal(new int[] {
             300,
             0,
@@ -139,7 +145,7 @@
             0,
             0});
             this.MaxChipsUpDown.Name = "MaxChipsUpDown";
-            this.MaxChipsUpDown.Size = new System.Drawing.Size(100, 20);
+            this.MaxChipsUpDown.Size = new System.Drawing.Size(125, 22);
             this.MaxChipsUpDown.TabIndex = 19;
             this.MaxChipsUpDown.Value = new decimal(new int[] {
             20,
@@ -149,51 +155,58 @@
             // 
             // label5
             // 
-            this.label5.Location = new System.Drawing.Point(3, 61);
+            this.label5.Location = new System.Drawing.Point(4, 76);
+            this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(114, 20);
+            this.label5.Size = new System.Drawing.Size(142, 25);
             this.label5.TabIndex = 0;
             this.label5.Text = "Max. Chips/Value:";
             // 
             // MainMenu
             // 
-            this.MainMenu.MenuItems.Add(this.LoadMenu);
-            this.MainMenu.MenuItems.Add(this.CalculateMenu);
+            this.MainMenu.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+            this.LoadMenu,
+            this.CalculateMenu});
             // 
-            // LadeMenu
+            // LoadMenu
             // 
-
-            this.LoadMenu.MenuItems.Add(this.OneNormal500Menu);
-            this.LoadMenu.MenuItems.Add(this.OneFull500Menu);
-            this.LoadMenu.MenuItems.Add(this.Two500Menu);
+            this.LoadMenu.Index = 0;
+            this.LoadMenu.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+            this.OneNormal500Menu,
+            this.OneFull500Menu,
+            this.Two500Menu});
             this.LoadMenu.Text = "Load Case";
             // 
-            // Ein500erNormalMenu
+            // OneNormal500Menu
             // 
+            this.OneNormal500Menu.Index = 0;
             this.OneNormal500Menu.Text = "One 500 (normal)";
             this.OneNormal500Menu.Click += new System.EventHandler(this.OnOneNormal500Click);
             // 
-            // Ein500erVollMenu
+            // OneFull500Menu
             // 
+            this.OneFull500Menu.Index = 1;
             this.OneFull500Menu.Text = "One 500 (full)";
             this.OneFull500Menu.Click += new System.EventHandler(this.OnOneFull500Click);
             // 
-            // Zwei500erMenu
+            // Two500Menu
             // 
+            this.Two500Menu.Index = 2;
             this.Two500Menu.Text = "Two 500s (full)";
             this.Two500Menu.Click += new System.EventHandler(this.OnTwo500Click);
             // 
-            // BerechneMenu
+            // CalculateMenu
             // 
+            this.CalculateMenu.Index = 1;
             this.CalculateMenu.Text = "Calculate";
             this.CalculateMenu.Click += new System.EventHandler(this.OnCalculateMenuClick);
             // 
             // MainForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(120F, 120F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.AutoScroll = true;
-            this.ClientSize = new System.Drawing.Size(240, 268);
+            this.ClientSize = new System.Drawing.Size(300, 335);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.MaxChipsUpDown);
             this.Controls.Add(this.PlayersUpDown);
@@ -203,14 +216,14 @@
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.MaximizeBox = false;
             this.Menu = this.MainMenu;
             this.Name = "MainForm";
             this.Text = "Poker Chips";
-            //((System.ComponentModel.ISupportInitialize)(this.SummeUpDown)).EndInit();
-            //((System.ComponentModel.ISupportInitialize)(this.SpielerUpDown)).EndInit();
-            //((System.ComponentModel.ISupportInitialize)(this.MaxChipsUpDown)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.SumUpDown)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.PlayersUpDown)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.MaxChipsUpDown)).EndInit();
             this.ResumeLayout(false);
 
         }
