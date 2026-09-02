@@ -6,6 +6,12 @@
         <meta name="viewport" content="width=device-width; initial-scale=1" />
         <script src="PokerChipsSolver.js"></script>
         <script src="PokerChips.js"></script>
+        <style>
+            #pokerTable td, #pokerTable th
+            {
+                padding: 4px 15px;
+            }
+        </style>
     </head>
     <body style="font-family: Verdana, Geneva, sans-serif;">
         <form>
@@ -38,16 +44,16 @@
                     <th>Gesamt Chips im Koffer je Wert:</th>
                     <th>Chip Wert:</th>
                 </tr>
-                <script>
-                    for(let caseIndex = 0; caseIndex < NumberOfCaseChipColors; caseIndex++)
-                    {
-                        addCaseRow(caseIndex);
-                    }
-                </script>
-                <tr>
+                <tr id="calculateRow">
                     <td><input type="button" value="Berechnen" onClick="calculate('de');" style="width: 95%;" /></td>
                 </tr>
             </table>
+            <script>
+                for(let caseIndex = 0; caseIndex < NumberOfCaseChipColors; caseIndex++)
+                {
+                    addCaseRow(caseIndex);
+                }
+            </script>
         </form>
 		<p>
 			<a href="en/index.html">in English</a>

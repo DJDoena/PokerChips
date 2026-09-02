@@ -4,6 +4,7 @@ const PokerTable = "pokerTable";
 const PlayerChipRowPrefix = "playerChipRow_";
 const CaseChipAmountPrefix = "caseChipAmount_";
 const CaseChipValuePrefix = "caseChipValue_";
+const CalculateRowId = "calculateRow";
 
 const NumberOfCaseChipColors = 5;
 
@@ -110,9 +111,15 @@ function addSelectCell(rowNode, id)
 
 // Adds one case-chip input row (amount <select> + value <select>) to the poker table, identified
 // by caseChipIndex, used once per case-chip color slot at page setup.
+// Inserted directly above the "Calculate" button row (identified by CalculateRowId) instead of
+// being appended at the end of the table, since the setup script that calls this runs after the
+// whole table (including the button row) has already been parsed - <script> is not a valid child
+// of <table>/<tr>, so it can no longer live between the header row and the button row in the HTML.
 function addCaseRow(caseChipIndex)
 {
-    let rowNode = getById(PokerTable).insertRow(-1);
+    let calculateRowNode = getById(CalculateRowId);
+
+    let rowNode = getById(PokerTable).insertRow(calculateRowNode.rowIndex);
 
     let amountSelectNode = addSelectCell(rowNode, CaseChipAmountPrefix + caseChipIndex);
     addAmountOptions(amountSelectNode);
@@ -188,6 +195,8 @@ function initPlayerChipsOutput()
     {
         initPlayerChipOutput(playerChipIndex);
     }
+
+    initPlayerChipOutput("GrandTotal");
 }
 
 // Reads the current amount/value selection for one case-chip row and builds the corresponding Chip.
@@ -265,7 +274,8 @@ function createCaseChips()
     return { caseChips: caseChips, invalidRow: -1 };
 }
 
-// Appends one output row showing the resolved amount/value of a single player chip denomination.
+// Appends one output row showing the resolved amount/value/total value of a single player chip
+// denomination.
 function addPlayerChipOutput(playerChipIndex, playerChip)
 {
     let rowNode = getById(PokerTable).insertRow(-1);
@@ -278,15 +288,34 @@ function addPlayerChipOutput(playerChipIndex, playerChip)
     let valueCellNode = rowNode.insertCell(-1);
     valueCellNode.setAttribute("style", "text-align: center;");
     valueCellNode.innerText = playerChip.getValue();
+
+    let totalCellNode = rowNode.insertCell(-1);
+    totalCellNode.setAttribute("style", "text-align: center;");
+    totalCellNode.innerText = playerChip.getAmount() * playerChip.getValue();
 }
 
-// Appends one output row per resolved player chip denomination.
+// Appends one output row per resolved player chip denomination, followed by a bold grand-total
+// row showing the combined total value of all player chips (mirrors ResultForm.AddGrandTotalLabel).
 function addPlayerChipsOutput(playerChips)
 {
+    let grandTotal = 0;
+
     for(let playerChipIndex = 0; playerChipIndex < playerChips.length; playerChipIndex++)
     {
         addPlayerChipOutput(playerChipIndex, playerChips[playerChipIndex]);
+
+        grandTotal += playerChips[playerChipIndex].getAmount() * playerChips[playerChipIndex].getValue();
     }
+
+    let rowNode = getById(PokerTable).insertRow(-1);
+    setId(rowNode, PlayerChipRowPrefix + "GrandTotal");
+
+    rowNode.insertCell(-1);
+    rowNode.insertCell(-1);
+
+    let grandTotalCellNode = rowNode.insertCell(-1);
+    grandTotalCellNode.setAttribute("style", "text-align: center; font-weight: bold;");
+    grandTotalCellNode.innerText = grandTotal;
 }
 
 // All user-facing texts, keyed by language. Add a language by adding a new top-level key here.
@@ -297,6 +326,7 @@ const Translations =
         insufficientChips: "Die Anzahl der Chips mal den Wert der Chips ist nicht ausreichend für die Anzahl der Spieler!",
         amountOfChipsPerPlayer: "Anzahl Chips je Spieler:",
         chipValue: "Chip Wert:",
+        totalValue: "Gesamtwert:",
         amountSetButValueIsZero: "In Zeile {0} wurde eine Anzahl ohne einen Chip-Wert ausgewählt!"
     },
     en:
@@ -304,6 +334,7 @@ const Translations =
         insufficientChips: "Number of chips times value of chips is insufficient for the number of players!",
         amountOfChipsPerPlayer: "Amount of chips per player:",
         chipValue: "Chip value:",
+        totalValue: "Total Value:",
         amountSetButValueIsZero: "In row {0} an amount was selected without a chip value!"
     }
 };
@@ -349,6 +380,10 @@ function calculate(languageCode)
     let valueCellNode = rowNode.insertCell(-1);
     valueCellNode.setAttribute("style", "text-align: center; font-weight: bold;");
     valueCellNode.innerText = translations.chipValue;
+
+    let totalCellNode = rowNode.insertCell(-1);
+    totalCellNode.setAttribute("style", "text-align: center; font-weight: bold;");
+    totalCellNode.innerText = translations.totalValue;
 
     addPlayerChipsOutput(playerChips);
 }
