@@ -1,6 +1,6 @@
 ﻿namespace DoenaSoft.PokerChips;
 
-internal static class PlayerChipsHelper
+public static class PlayerChipsHelper
 {
     public static int CreatePlayerChips(List<Chip> playerChips
         , List<Chip> caseChips
@@ -20,7 +20,11 @@ internal static class PlayerChipsHelper
                 ? caseChips[index + 1] 
                 : null;
 
-            if (chipCalculator.AddPlayerChip(currentCaseChip, nextCaseChip, ref remainingValue))
+            var (isDone, updatedRemainingValue) = chipCalculator.AddPlayerChip(currentCaseChip, nextCaseChip, remainingValue);
+
+            remainingValue = updatedRemainingValue;
+
+            if (isDone)
             {
                 break;
             }

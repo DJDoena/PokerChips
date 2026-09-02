@@ -8,6 +8,7 @@
   <Folder Name="/Web/en/">
     <File Path="PokerChips_Web/en/index.html" />
   </Folder>
+  <Project Path="PokerChips_Library/PokerChips_Library.csproj" />
   <Project Path="PokerChips_Windows/PokerChipsForWindows.csproj" />
   <Project Path="TestProject1/TestProject1.csproj" />
 </Solution>

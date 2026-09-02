@@ -3,13 +3,13 @@
 namespace DoenaSoft.PokerChips;
 
 [DebuggerDisplay("{Amount} chips x {Value} = {Amount * Value}")]
-internal sealed class Chip
+public sealed class Chip
 {
-    internal int Amount { get; }
+    public int Amount { get; }
 
-    internal int Value { get; }
+    public int Value { get; }
 
-    internal Chip(int amount, int value)
+    public Chip(int amount, int value)
     {
         this.Amount = amount;
         this.Value = value;

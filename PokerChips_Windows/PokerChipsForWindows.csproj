@@ -25,7 +25,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<InternalsVisibleTo Include="TestProject1" />
+	  <ProjectReference Include="..\PokerChips_Library\PokerChips_Library.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

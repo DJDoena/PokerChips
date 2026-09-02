@@ -10,7 +10,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\PokerChips_Windows\PokerChipsForWindows.csproj" />
+	  <ProjectReference Include="..\PokerChips_Library\PokerChips_Library.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

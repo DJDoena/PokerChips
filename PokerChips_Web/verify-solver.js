@@ -62,6 +62,18 @@ allPassed = runCase("EarlierChipNeedsToBeSkippedForLaterChipToDivideEvenly_Solve
 // Mirrors ChipCalculatorTests.DefaultGame
 allPassed = runCase("DefaultGame", [[100, 200], [150, 100], [150, 25]], 20, 5, 5000, 0, [[20, 25], [19, 100], [13, 200]]) && allPassed;
 
+// Mirrors ChipCalculatorTests.DefaultGameFullCase
+allPassed = runCase("DefaultGameFullCase", [[50, 1000], [50, 500], [100, 200], [150, 100], [150, 25]], 20, 5, 5000, 0, [[20, 25], [19, 100], [13, 200]]) && allPassed;
+
+// Mirrors ChipCalculatorTests.DefaultGameFullCase_ShuffledOrder: same amount/value pairs as
+// DefaultGameFullCase, but supplied in a shuffled order, to check that the solver's internal
+// sort-by-value makes the result independent of input order.
+allPassed = runCase("DefaultGameFullCase_ShuffledOrder", [[150, 100], [50, 1000], [150, 25], [100, 200], [50, 500]], 20, 5, 5000, 0, [[20, 25], [19, 100], [13, 200]]) && allPassed;
+
+// Mirrors ChipCalculatorTests.ZeroValueChip_IsIgnoredBySolver: a 0-value chip must be filtered
+// out before reaching the solver, since it can never contribute to the target sum.
+allPassed = runCase("ZeroValueChip_IsIgnoredBySolver", [[100, 200], [150, 100], [150, 25], [0, 0]], 20, 5, 5000, 0, [[20, 25], [19, 100], [13, 200]]) && allPassed;
+
 console.log(allPassed ? "\nAll cases passed." : "\nSome cases FAILED.");
 
 process.exitCode = allPassed ? 0 : 1;
