@@ -126,6 +126,34 @@ public sealed class ChipCalculatorTests
         Assert.AreEqual(13, playerChips[2].Amount);
     }
 
+    [TestMethod]
+    public void DefaultGameFullCase()
+    {
+        var caseChips = new List<Chip>()
+        {
+            new(amount: 50, value: 1000),
+            new(amount: 50, value: 500),
+            new(amount: 100, value: 200),
+            new(amount: 150, value: 100),
+            new(amount: 150, value: 25),
+        };
+
+        var (remainingValue, playerChips) = RunCalculation(caseChips, maxChips: 20, amountPlayers: 5, targetValue: 5000);
+
+        Assert.AreEqual(0, remainingValue);
+        Assert.HasCount(3, playerChips);
+
+        Assert.AreEqual(25, playerChips[0].Value);
+        Assert.AreEqual(20, playerChips[0].Amount);
+
+
+        Assert.AreEqual(100, playerChips[1].Value);
+        Assert.AreEqual(19, playerChips[1].Amount);
+
+        Assert.AreEqual(200, playerChips[2].Value);
+        Assert.AreEqual(13, playerChips[2].Amount);
+    }
+
     private static (int remainingValue, List<Chip> playerChips) RunCalculation(List<Chip> caseChips
         , int maxChips
         , int amountPlayers

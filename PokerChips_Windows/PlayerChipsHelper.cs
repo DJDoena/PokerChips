@@ -16,7 +16,9 @@ internal static class PlayerChipsHelper
         {
             var currentCaseChip = caseChips[index];
 
-            var nextCaseChip = (index < caseChips.Count - 1) ? caseChips[index + 1] : null;
+            var nextCaseChip = (index < caseChips.Count - 1)
+                ? caseChips[index + 1] 
+                : null;
 
             if (chipCalculator.AddPlayerChip(currentCaseChip, nextCaseChip, ref remainingValue))
             {
