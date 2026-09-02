@@ -27,55 +27,38 @@ internal partial class ResultForm : Form
     }
 
     private void AddAmountLabel(Chip chip, int index)
-    {
-        var amountLabel = new Label()
-        {
-            Location = new Point(3, 25 + index * 20),
-            Name = "AmountLabel" + index.ToString(),
-            Size = new Size(100, 22),
-            Text = chip.Amount.ToString()
-        };
-
-        this.Controls.Add(amountLabel);
-    }
+        => this.AddLabel(index, AmountHeadLineLabel.Location.X, "AmountLabel", chip.Amount);
 
     private void AddValueLabel(Chip chip, int index)
-    {
-        var valueLabel = new Label()
-        {
-            Location = new Point(137, 25 + index * 20),
-            Name = "ValueLabel" + index.ToString(),
-            Size = new Size(100, 22),
-            Text = chip.Value.ToString()
-        };
-
-        this.Controls.Add(valueLabel);
-    }
+        => this.AddLabel(index, ValueHeadlineLabel.Location.X, "ValueLabel", chip.Value);
 
     private void AddTotalLabel(Chip chip, int index)
-    {
-        var totalLabel = new Label()
-        {
-            Location = new Point(271, 25 + index * 20),
-            Name = "TotalLabel" + index.ToString(),
-            Size = new Size(100, 22),
-            Text = (chip.Amount * chip.Value).ToString()
-        };
-
-        this.Controls.Add(totalLabel);
-    }
+        => this.AddLabel(index, TotalHeadlineLabel.Location.X, "TotalLabel", chip.Amount * chip.Value);
 
     private void AddGrandTotalLabel(int grandTotal, int chipCount)
     {
-        var grandTotalLabel = new Label()
+        var label = this.AddLabel(chipCount, TotalHeadlineLabel.Location.X, "GrandTotalLabel", grandTotal);
+
+        label.Font = new Font(this.Font, FontStyle.Bold);
+    }
+
+    private Label AddLabel(int index
+        , int x
+        , string name
+        , int text)
+    {
+        var y = 25 + index * 20;
+
+        var label = new Label()
         {
-            Font = new Font(this.Font, FontStyle.Bold),
-            Location = new Point(271, 25 + chipCount * 20),
-            Name = "GrandTotalLabel",
+            Location = new Point(x, y),
+            Name = $"{name}{index}",
             Size = new Size(100, 22),
-            Text = grandTotal.ToString()
+            Text = text.ToString()
         };
 
-        this.Controls.Add(grandTotalLabel);
+        this.Controls.Add(label);
+
+        return label;
     }
 }
