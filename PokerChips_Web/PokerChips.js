@@ -35,6 +35,7 @@ const ValueOption25000 = 25000;
 const ValueOption50000 = 50000;
 const ValueOption100000 = 100000;
 
+// Shorthand for document.getElementById.
 function getById(id)
 {
     let node = document.getElementById(id);
@@ -42,11 +43,13 @@ function getById(id)
     return node;
 }
 
+// Shorthand for setting a node's id attribute.
 function setId(node, id)
 {
     node.setAttribute("id", id);
 }
 
+// Appends a single <option> (with its text set to value) to the given <select> node.
 function addSelectOption(selectNode, value)
 {
     let optionNode = document.createElement("OPTION");
@@ -54,6 +57,7 @@ function addSelectOption(selectNode, value)
     selectNode.add(optionNode);
 }
 
+// Populates an amount <select> with the fixed set of selectable chip amounts.
 function addAmountOptions(selectNode)
 {
     addSelectOption(selectNode, AmountOption0);
@@ -67,6 +71,7 @@ function addAmountOptions(selectNode)
     addSelectOption(selectNode, AmountOption1000);
 }
 
+// Populates a value <select> with the fixed set of selectable chip denominations.
 function addValueOptions(selectNode)
 {
     addSelectOption(selectNode, ValueOption0);
@@ -88,6 +93,8 @@ function addValueOptions(selectNode)
     addSelectOption(selectNode, ValueOption100000);
 }
 
+// Appends a new table cell containing an (initially empty) <select> node with the given id,
+// returning the <select> node so its options can be populated by the caller.
 function addSelectCell(rowNode, id)
 {
     let cellNode = rowNode.insertCell(-1);
@@ -101,6 +108,8 @@ function addSelectCell(rowNode, id)
     return selectNode;
 }
 
+// Adds one case-chip input row (amount <select> + value <select>) to the poker table, identified
+// by caseChipIndex, used once per case-chip color slot at page setup.
 function addCaseRow(caseChipIndex)
 {
     let rowNode = getById(PokerTable).insertRow(-1);
@@ -112,6 +121,8 @@ function addCaseRow(caseChipIndex)
     addValueOptions(valueSelectNode);
 }
 
+// Sets the amount/value selection for one case-chip row, used by the preset-case functions below.
+// Silently does nothing if caseChipIndex is out of range (more color slots requested than exist).
 function setCaseDefaults(caseChipIndex, amount, value)
 {
     if(caseChipIndex >= NumberOfCaseChipColors)
@@ -123,6 +134,7 @@ function setCaseDefaults(caseChipIndex, amount, value)
     getById(CaseChipValuePrefix + caseChipIndex).value = value;
 }
 
+// Preset: fills the case rows with a single normal 500-chip case (25/100/200 only, no 500s/1000s).
 function setOneNormal500Case()
 {
     setCaseDefaults(0, AmountOption150, ValueOption25);
@@ -132,6 +144,8 @@ function setOneNormal500Case()
     setCaseDefaults(4, AmountOption0, ValueOption0);
 }
 
+// Preset: fills the case rows with a single full 500-chip case (adds 500s and 1000s on top of
+// setOneNormal500Case).
 function setOneFull500Case()
 {
     setCaseDefaults(0, AmountOption150, ValueOption25);
@@ -141,6 +155,8 @@ function setOneFull500Case()
     setCaseDefaults(4, AmountOption50, ValueOption1000);
 }
 
+// Preset: fills the case rows with two full 500-chip cases combined (double the amounts of
+// setOneFull500Case).
 function setTwo500Case()
 {
     setCaseDefaults(0, AmountOption300, ValueOption25);
@@ -150,6 +166,8 @@ function setTwo500Case()
     setCaseDefaults(4, AmountOption100, ValueOption1000);
 }
 
+// Removes a single previously-added player-chip output row (identified by playerChipIndex, or "H"
+// for the header row), if it exists, so a fresh "Calculate" run doesn't append duplicate rows.
 function initPlayerChipOutput(playerChipIndex)
 {
     let rowNode = getById(PlayerChipRowPrefix + playerChipIndex);
@@ -160,6 +178,8 @@ function initPlayerChipOutput(playerChipIndex)
     }
 }
 
+// Clears all player-chip output rows (header + one per case-chip color slot) left over from a
+// previous "Calculate" run, in preparation for a new one.
 function initPlayerChipsOutput()
 {
     initPlayerChipOutput("H");
@@ -170,6 +190,7 @@ function initPlayerChipsOutput()
     }
 }
 
+// Reads the current amount/value selection for one case-chip row and builds the corresponding Chip.
 function createCaseChip(caseChipIndex)
 {
     let amount = parseInt(getById(CaseChipAmountPrefix + caseChipIndex).value);
@@ -178,6 +199,8 @@ function createCaseChip(caseChipIndex)
     return new Chip(amount, value);
 }
 
+// Sorts caseChips ascending by value in place (simple bubble sort), matching the order the
+// solver's own denomination sort expects, so the resulting output rows are shown lowest-value first.
 function sortCaseChips(caseChips)
 {
     let resorted = false;
@@ -200,6 +223,27 @@ function sortCaseChips(caseChips)
     }while (resorted === true);
 }
 
+// A chip with an amount greater than 0 but a value of 0 is not a legitimate case chip (mirrors
+// the guard in ChipCalculator.AddPlayerChip / solveChipAllocation), so the UI rejects it before
+// it ever reaches the solver. Must be checked against the case chips in their original (UI) row
+// order, before they get resorted by value, so the reported row number matches what the user sees.
+// Returns the 1-based row number of the first offending case chip, or -1 if every case chip is valid.
+function findRowWithAmountButNoValue(unsortedCaseChips)
+{
+    for(let caseChipIndex = 0; caseChipIndex < unsortedCaseChips.length; caseChipIndex++)
+    {
+        if(unsortedCaseChips[caseChipIndex].getAmount() > 0 && unsortedCaseChips[caseChipIndex].getValue() === 0)
+        {
+            return caseChipIndex + 1;
+        }
+    }
+
+    return -1;
+}
+
+// Reads all case-chip rows into Chip objects and validates them. If any row has an amount but no
+// value, sorting/solving is skipped and the offending row number is returned via invalidRow;
+// otherwise the chips are sorted ascending by value (see sortCaseChips) and returned in caseChips.
 function createCaseChips()
 {
     let caseChips = [];
@@ -209,11 +253,19 @@ function createCaseChips()
         caseChips.push(createCaseChip(caseChipIndex));
     }
 
+    let invalidRow = findRowWithAmountButNoValue(caseChips);
+
+    if(invalidRow !== -1)
+    {
+        return { caseChips: null, invalidRow: invalidRow };
+    }
+
     sortCaseChips(caseChips);
 
-    return caseChips;
+    return { caseChips: caseChips, invalidRow: -1 };
 }
 
+// Appends one output row showing the resolved amount/value of a single player chip denomination.
 function addPlayerChipOutput(playerChipIndex, playerChip)
 {
     let rowNode = getById(PokerTable).insertRow(-1);
@@ -228,6 +280,7 @@ function addPlayerChipOutput(playerChipIndex, playerChip)
     valueCellNode.innerText = playerChip.getValue();
 }
 
+// Appends one output row per resolved player chip denomination.
 function addPlayerChipsOutput(playerChips)
 {
     for(let playerChipIndex = 0; playerChipIndex < playerChips.length; playerChipIndex++)
@@ -243,22 +296,36 @@ const Translations =
     {
         insufficientChips: "Die Anzahl der Chips mal den Wert der Chips ist nicht ausreichend für die Anzahl der Spieler!",
         amountOfChipsPerPlayer: "Anzahl Chips je Spieler:",
-        chipValue: "Chip Wert:"
+        chipValue: "Chip Wert:",
+        amountSetButValueIsZero: "In Zeile {0} wurde eine Anzahl ohne einen Chip-Wert ausgewählt!"
     },
     en:
     {
         insufficientChips: "Number of chips times value of chips is insufficient for the number of players!",
         amountOfChipsPerPlayer: "Amount of chips per player:",
-        chipValue: "Chip value:"
+        chipValue: "Chip value:",
+        amountSetButValueIsZero: "In row {0} an amount was selected without a chip value!"
     }
 };
 
+// "Calculate" button handler: validates and reads the case chips, clears previous output, runs the
+// solver (see addPlayerChips in PokerChipsSolver.js), and renders either an error alert (invalid
+// input row, or insufficient chips for the requested stack size) or the resolved player chips.
 function calculate(languageCode)
 {
     let translations = Translations[languageCode] || Translations.en;
 
     initPlayerChipsOutput();
-    let caseChips = createCaseChips();
+    let caseChipsResult = createCaseChips();
+
+    if(caseChipsResult.invalidRow !== -1)
+    {
+        alert(translations.amountSetButValueIsZero.replace("{0}", caseChipsResult.invalidRow));
+
+        return;
+    }
+
+    let caseChips = caseChipsResult.caseChips;
     let playerChips = [];
     let stackSize = parseInt(getById("stackSize").value);
     let amountPlayers = parseInt(getById("amountPlayers").value);

@@ -56,6 +56,17 @@ function findBestAchievableSum(isSumAchievable, denominationCount, targetValue)
 // the target sum, so they are filtered out here instead of being fed into the solver.
 function solveChipAllocation(caseChips, targetValue, amountPlayers, maxChipsPerValue)
 {
+    // A chip with an amount greater than 0 but a value of 0 cannot be a legitimate case chip
+    // (only the UI's unused, empty color slots are expected to have a value of 0, and those
+    // always have an amount of 0 too), so reject it instead of silently ignoring it.
+    caseChips.forEach(caseChip =>
+    {
+        if(caseChip.getValue() === 0 && caseChip.getAmount() > 0)
+        {
+            throw new Error("A chip with an amount greater than 0 must not have a value of 0.");
+        }
+    });
+
     let sortedCaseChips = caseChips.filter(caseChip => caseChip.getValue() !== 0);
 
     // Sort ascending by value. The chip-count-minimizing tie-break in findMinUsableChipCount only

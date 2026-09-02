@@ -102,6 +102,13 @@ internal partial class MainForm : Form
 
                 return null;
             }
+
+            if (this.AmountIsSetButValueIsZero(index))
+            {
+                MessageBox.Show($"In row {index + 1} an amount was selected without a chip value!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+
+                return null;
+            }
         }
 
         var caseChips = new List<Chip>(ChipColors);
@@ -125,6 +132,29 @@ internal partial class MainForm : Form
 
     private bool InputMisMatch(int index)
         => this.AmountIsNotEmptyButValueIs(index) || this.ValueIsNotEmptyButAmountIs(index);
+
+    /// <summary>
+    /// A selected amount greater than 0 combined with a selected chip value of 0 is not a valid
+    /// case chip (see <see cref="ChipCalculator.AddPlayerChip"/>), so this is rejected here before
+    /// it ever reaches the solver.
+    /// </summary>
+    private bool AmountIsSetButValueIsZero(int index)
+    {
+        var amountComboBox = _amountComboBoxes[index];
+
+        var valueComboBox = _valueComboBoxes[index];
+
+        if (amountComboBox.SelectedIndex == -1 || valueComboBox.SelectedIndex == -1)
+        {
+            return false;
+        }
+
+        var amount = int.Parse(amountComboBox.Text);
+
+        var value = int.Parse(valueComboBox.Text);
+
+        return amount > 0 && value == 0;
+    }
 
     private bool AmountIsNotEmptyButValueIs(int index)
         => LeftIsNotEmptyButRightIs(_amountComboBoxes[index], _valueComboBoxes[index]);

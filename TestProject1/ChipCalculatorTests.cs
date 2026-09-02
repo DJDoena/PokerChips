@@ -1,11 +1,30 @@
 namespace DoenaSoft.PokerChips;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.Collections.Generic;
 
 [TestClass]
 public sealed class ChipCalculatorTests
 {
+    [TestMethod]
+    public void ChipWithAmountButNoValue_ThrowsArgumentException()
+    {
+        // Unlike a 0-value chip with an amount of 0 (see ZeroValueChip_IsIgnoredBySolver), a
+        // 0-value chip with a positive amount is not a legitimate case chip (the UI only produces
+        // 0-value chips for unused, empty color slots, which always have an amount of 0 too), so
+        // ChipCalculator.AddPlayerChip must reject it instead of silently ignoring it.
+        var caseChips = new List<Chip>()
+        {
+            new(amount: 100, value: 200),
+            new(amount: 150, value: 100),
+            new(amount: 150, value: 25),
+            new(amount: 10, value: 0),
+        };
+
+        Assert.ThrowsExactly<ArgumentException>(() => RunCalculation(caseChips, maxChips: 20, amountPlayers: 5, targetValue: 5000));
+    }
+
     [TestMethod]
     public void SimpleDivisibleCase_Succeeds()
     {

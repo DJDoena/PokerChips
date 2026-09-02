@@ -28,13 +28,25 @@ public sealed class ChipCalculator
     /// Once the last case chip has been buffered (<paramref name="nextCaseChip"/> is null), all
     /// buffered denominations are handed to the solver to compute the actual player chips at once.
     /// </summary>
+    /// <exception cref="ArgumentException">
+    /// Thrown when <paramref name="currentCaseChip"/> has an amount greater than 0 but a value of 0,
+    /// since that combination cannot be a legitimate case chip (only the UI's unused, empty
+    /// color slots are expected to have a value of 0, and those always have an amount of 0 too).
+    /// </exception>
     internal (bool isDone, int remainingValue) AddPlayerChip(Chip currentCaseChip
         , Chip nextCaseChip
         , int remainingValue)
     {
         var chipValue = currentCaseChip.Value;
 
-        if (chipValue != 0)
+        if (chipValue == 0)
+        {
+            if (currentCaseChip.Amount > 0)
+            {
+                throw new ArgumentException("A chip with an amount greater than 0 must not have a value of 0.", nameof(currentCaseChip));
+            }
+        }
+        else
         {
             var chipCountCap = this.GetMaxAmount(currentCaseChip.Amount);
 
