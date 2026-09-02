@@ -10,9 +10,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<Compile Include="..\PokerChips_Windows\Chip.cs" Link="Source\Chip.cs" />
-		<Compile Include="..\PokerChips_Windows\ChipCalculator.cs" Link="Source\ChipCalculator.cs" />
-		<Compile Include="..\PokerChips_Windows\PlayerChipsHelper.cs" Link="Source\PlayerChipsHelper.cs" />
+	  <ProjectReference Include="..\PokerChips_Windows\PokerChipsForWindows.csproj" />
 	</ItemGroup>
 
 </Project>
