@@ -1,4 +1,12 @@
 <Solution>
+  <Folder Name="/Web/">
+    <File Path="PokerChips_Web/index.html" />
+    <File Path="PokerChips_Web/PokerChips.js" />
+    <File Path="PokerChips_Web/verify-solver.js" />
+  </Folder>
+  <Folder Name="/Web/en/">
+    <File Path="PokerChips_Web/en/index.html" />
+  </Folder>
   <Project Path="PokerChips_Windows/PokerChipsForWindows.csproj" />
   <Project Path="TestProject1/TestProject1.csproj" />
 </Solution>

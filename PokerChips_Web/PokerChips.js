@@ -17,25 +17,6 @@ class Chip
     }
 }
 
-class AddPlayerChipResult
-{
-    constructor(isFinished, remainingValue)
-    {
-        this._isFinished = isFinished;
-        this._remainingValue = parseInt(remainingValue);
-    }
-
-    getIsFinished()
-    {
-        return this._isFinished;
-    }
-
-    getRemainingValue()
-    {
-        return this._remainingValue;
-    }
-}
-
 const PokerTable = "pokerTable";
 const PlayerChipRowPrefix = "playerChipRow_";
 const CaseChipAmountPrefix = "caseChipAmount_";
@@ -251,17 +232,10 @@ function createCaseChips()
     return caseChips;
 }
 
-function chipsExceedRemainingValue(chipAmount, chipValue, remainingValue)
-{
-    let result = (chipAmount * chipValue) >= remainingValue;
-
-    return result;
-}
-
-function getAmount(caseChipAmount, chipValue, remainingValue)
+function getMaxAmount(caseChipAmount)
 {
     let amountPlayers = parseInt(getById("amountPlayers").value);
-    let chipAmount = Math.floor(caseChipAmount / amountPlayers);;
+    let chipAmount = Math.floor(caseChipAmount / amountPlayers);
     let maxChips = parseInt(getById("maxChips").value);
 
     if(chipAmount > maxChips)
@@ -269,93 +243,141 @@ function getAmount(caseChipAmount, chipValue, remainingValue)
         chipAmount = maxChips;
     }
 
-    if(chipsExceedRemainingValue(chipAmount, chipValue, remainingValue) === true)
-    {
-        chipAmount = Math.floor(remainingValue / chipValue);
-    }
-
     return chipAmount;
 }
 
-function isDivisibleWithoutRemainder(chipValue, remainingValue)
+function findBestAchievableSum(isSumAchievable, denominationCount, targetValue)
 {
-    let result = (remainingValue % chipValue) === 0;
-
-    return result;
-}
-
-function isLastChip(amount, chipValue, nextCaseChip, remainingValue)
-{
-    let result = (nextCaseChip === null) || ((chipsExceedRemainingValue(amount, chipValue, remainingValue) === true)  &&  (isDivisibleWithoutRemainder(chipValue, remainingValue) === true))
-    
-    return result;
-}
-
-function addPlayerChip(chipAmount, chipValue, playerChips, remainingValue)
-{
-    playerChips.push(new Chip(chipAmount, chipValue));
-    remainingValue -= (chipAmount * chipValue);
-    
-    return new AddPlayerChipResult(remainingValue === 0, remainingValue); 
-}
-
-function tryAddPlayerChipWithConvenientValueForNextChip(currentChipAmount, currentChipValue, nextChipValue, playerChips, remainingValue)
-{
-    for(; currentChipAmount > 0; currentChipAmount--)
+    for(let candidateSum = targetValue; candidateSum >= 0; candidateSum--)
     {
-        let potentialRemainingValue = remainingValue - (currentChipAmount * currentChipValue);
-
-        if(isDivisibleWithoutRemainder(nextChipValue, potentialRemainingValue))
+        if(isSumAchievable[denominationCount][candidateSum] === true)
         {
-            let result = addPlayerChip(currentChipAmount, currentChipValue, playerChips, remainingValue);
-
-            return result;
+            return candidateSum;
         }
     }
 
-    return new AddPlayerChipResult(false, remainingValue);
+    return -1;
 }
 
-function tryAddPlayerChip(currentCaseChip, nextCaseChip, playerChips, remainingValue)
+// Solves for the combination of chip counts (one count per case chip denomination) that sums up
+// as closely as possible to targetValue, without exceeding it, while respecting each denomination's
+// cap (see getMaxAmount). This is a classic "bounded knapsack" problem: each denomination may be
+// used between 0 and its cap number of times, and we want the achievable sum closest to the target.
+function solveChipAllocation(caseChips, targetValue)
 {
-    let chipValue = currentCaseChip.getValue();                
-    let amount = getAmount(currentCaseChip.getAmount(), chipValue, remainingValue);
-    
-    if(isLastChip(amount, chipValue, nextCaseChip, remainingValue) === true)
-    {
-        let result = addPlayerChip(amount, chipValue, playerChips, remainingValue);
+    let denominationCount = caseChips.length;
+    let denominationValues = caseChips.map(caseChip => caseChip.getValue());
+    let denominationCaps = caseChips.map(caseChip => getMaxAmount(caseChip.getAmount()));
 
-        return result;
+    // The chip-count-maximizing tie-break below only favors fewer, higher-value chips overall if
+    // the highest-value denominations are considered first. Build a descending-by-value index
+    // order here, independent of the order the case chips were passed in.
+    let denominationOrder = [];
+
+    for(let index = 0; index < denominationCount; index++)
+    {
+        denominationOrder.push(index);
     }
 
-    let result = tryAddPlayerChipWithConvenientValueForNextChip(amount, chipValue, nextCaseChip.getValue(), playerChips, remainingValue);
+    denominationOrder.sort((left, right) => denominationValues[right] - denominationValues[left]);
 
-    return result;
+    // isSumAchievable[denominationIndex][sum] is true if "sum" can be built exactly using only the
+    // first "denominationIndex" denominations (in descending-value order), each within its own cap.
+    let isSumAchievable = [];
+
+    // chipCountUsedForSum[denominationIndex][sum] stores how many chips of the denomination at
+    // (denominationIndex - 1) were used to achieve "sum", so the choice can be reconstructed afterwards.
+    let chipCountUsedForSum = [];
+
+    for(let index = 0; index <= denominationCount; index++)
+    {
+        isSumAchievable.push(new Array(targetValue + 1).fill(false));
+        chipCountUsedForSum.push(new Array(targetValue + 1).fill(0));
+    }
+
+    // Base case: a sum of 0 is always achievable using zero denominations.
+    isSumAchievable[0][0] = true;
+
+    for(let denominationIndex = 1; denominationIndex <= denominationCount; denominationIndex++)
+    {
+        let originalIndex = denominationOrder[denominationIndex - 1];
+        let chipValue = denominationValues[originalIndex];
+        let chipCountCap = denominationCaps[originalIndex];
+
+        for(let candidateSum = 0; candidateSum <= targetValue; candidateSum++)
+        {
+            // Try using as many chips of this denomination as possible first, so that when a valid
+            // combination is found it favors fewer, higher-value chips overall (since higher-value
+            // denominations are considered first, in descending order).
+            for(let chipCount = chipCountCap; chipCount >= 0; chipCount--)
+            {
+                let valueFromThisDenomination = chipCount * chipValue;
+
+                if(valueFromThisDenomination > candidateSum)
+                {
+                    continue;
+                }
+
+                let remainingSumForEarlierDenominations = candidateSum - valueFromThisDenomination;
+
+                if(isSumAchievable[denominationIndex - 1][remainingSumForEarlierDenominations] === true)
+                {
+                    isSumAchievable[denominationIndex][candidateSum] = true;
+                    chipCountUsedForSum[denominationIndex][candidateSum] = chipCount;
+
+                    break;
+                }
+            }
+        }
+    }
+
+    let bestAchievableSum = findBestAchievableSum(isSumAchievable, denominationCount, targetValue);
+    let chipCounts = new Array(denominationCount).fill(0);
+
+    if(bestAchievableSum < 0)
+    {
+        // No combination of chips (not even zero of everything) matched, which should not normally
+        // happen since a sum of 0 is always achievable.
+        return { chipCounts: chipCounts, achievedValue: 0 };
+    }
+
+    // Walk the denominations backwards (i.e. from lowest to highest value, the reverse of the
+    // descending order used above), reading off how many chips of each were used to reach
+    // bestAchievableSum, and record them against their original denomination index.
+    let valueLeftToAllocate = bestAchievableSum;
+
+    for(let denominationIndex = denominationCount; denominationIndex >= 1; denominationIndex--)
+    {
+        let chipCount = chipCountUsedForSum[denominationIndex][valueLeftToAllocate];
+        let originalIndex = denominationOrder[denominationIndex - 1];
+        let chipValue = denominationValues[originalIndex];
+
+        chipCounts[originalIndex] = chipCount;
+
+        valueLeftToAllocate -= (chipCount * chipValue);
+    }
+
+    return { chipCounts: chipCounts, achievedValue: bestAchievableSum, denominationOrder: denominationOrder };
 }
 
+// Adds the resolved player chips in the same order the C# solver (ChipCalculator.Solve) emits
+// them: walking the descending-by-value denominationOrder backwards, i.e. lowest value first.
 function addPlayerChips(caseChips, playerChips, stackSize)
 {
-    let remainingValue = stackSize;
+    let solution = solveChipAllocation(caseChips, stackSize);
 
-    for(let caseChipIndex = 0; caseChipIndex < caseChips.length; caseChipIndex++)
+    for(let denominationIndex = solution.denominationOrder.length - 1; denominationIndex >= 0; denominationIndex--)
     {
-        let currentCaseChip = caseChips[caseChipIndex];
+        let originalIndex = solution.denominationOrder[denominationIndex];
+        let chipCount = solution.chipCounts[originalIndex];
 
-        let nextCaseChip = null;
-
-        if(caseChipIndex < caseChips.length - 1)
+        if(chipCount > 0)
         {
-            nextCaseChip = caseChips[caseChipIndex + 1];
-        }
-
-        let result = tryAddPlayerChip(currentCaseChip, nextCaseChip, playerChips, remainingValue);
-        remainingValue = result.getRemainingValue();
-
-        if(result.getIsFinished() === true)
-        {
-            break;
+            playerChips.push(new Chip(chipCount, caseChips[originalIndex].getValue()));
         }
     }
+
+    let remainingValue = stackSize - solution.achievedValue;
 
     return remainingValue;
 }

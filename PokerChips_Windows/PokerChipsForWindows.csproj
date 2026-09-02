@@ -7,11 +7,23 @@
 		<RootNamespace>DoenaSoft.PokerChips</RootNamespace>
 		<AssemblyName>PokerChipsForWindows</AssemblyName>
 		<ApplicationIcon>DJDSOFT.ICO</ApplicationIcon>
-		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+		<LangVersion>latest</LangVersion>
+		<AssemblyTitle>PokerChips for Windows</AssemblyTitle>
+		<Description></Description>
+		<Company>Doena Soft.</Company>
+		<Product>PokerChips for Windows</Product>
+		<Copyright>Copyright © Doena Soft.  2012 - 2026</Copyright>
+		<AssemblyVersion>1.1</AssemblyVersion>
+		<FileVersion>1.1</FileVersion>
+		<ImplicitUsings>enable</ImplicitUsings>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<Content Include="DJDSOFT.ICO" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<InternalsVisibleTo Include="TestProject1" />
 	</ItemGroup>
 
 </Project>

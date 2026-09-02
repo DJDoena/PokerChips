@@ -1,6 +1,7 @@
 ﻿<Project Sdk="MSTest.Sdk/4.0.2">
 
 	<PropertyGroup>
+		<RootNamespace>DoenaSoft.PokerChips</RootNamespace>
 		<TargetFramework>net10.0</TargetFramework>
 		<LangVersion>latest</LangVersion>
 		<ImplicitUsings>enable</ImplicitUsings>
@@ -11,6 +12,7 @@
 	<ItemGroup>
 		<Compile Include="..\PokerChips_Windows\Chip.cs" Link="Source\Chip.cs" />
 		<Compile Include="..\PokerChips_Windows\ChipCalculator.cs" Link="Source\ChipCalculator.cs" />
+		<Compile Include="..\PokerChips_Windows\PlayerChipsHelper.cs" Link="Source\PlayerChipsHelper.cs" />
 	</ItemGroup>
 
 </Project>

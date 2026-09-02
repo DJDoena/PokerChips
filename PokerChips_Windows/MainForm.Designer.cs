@@ -186,7 +186,7 @@
             // BerechneMenu
             // 
             this.CalculateMenu.Text = "Calculate";
-            this.CalculateMenu.Click += new System.EventHandler(this.OnBerechneMenuClick);
+            this.CalculateMenu.Click += new System.EventHandler(this.OnCalculateMenuClick);
             // 
             // MainForm
             // 
