@@ -2,7 +2,7 @@
 {
     using System.Collections.Generic;
 
-    internal sealed class ChipCalculator
+    public sealed class ChipCalculator
     {
         private readonly List<Chip> _playerChips;
 
@@ -10,7 +10,7 @@
 
         private readonly int _amountPlayers;
 
-        public ChipCalculator(List<Chip> playerChips, int maxChips, int amountPlayers)
+        internal ChipCalculator(List<Chip> playerChips, int maxChips, int amountPlayers)
         {
             _playerChips = playerChips;
             _maxChips = maxChips;
