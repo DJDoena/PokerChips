@@ -22,7 +22,7 @@ public sealed class ChipCalculatorTests
             new(amount: 10, value: 1),
         };
 
-        var (remainingValue, _) = RunCalculation(caseChips, maxChips: 100, amountPlayers: 1, startingValue: 7);
+        var (remainingValue, _) = RunCalculation(caseChips, maxChips: 100, amountPlayers: 1, targetValue: 7);
 
         Assert.AreEqual(0, remainingValue);
     }
@@ -49,7 +49,7 @@ public sealed class ChipCalculatorTests
             new(amount: 2, value: 1),
         };
 
-        var (remainingValue, _) = RunCalculation(caseChips, maxChips: 100, amountPlayers: 1, startingValue: 17);
+        var (remainingValue, _) = RunCalculation(caseChips, maxChips: 100, amountPlayers: 1, targetValue: 17);
 
         Assert.AreEqual(0, remainingValue);
     }
@@ -73,7 +73,7 @@ public sealed class ChipCalculatorTests
             new(amount: 1, value: 5),
         };
 
-        var (remainingValue, _) = RunCalculation(caseChips, maxChips: 100, amountPlayers: 1, startingValue: 13);
+        var (remainingValue, _) = RunCalculation(caseChips, maxChips: 100, amountPlayers: 1, targetValue: 13);
 
         Assert.AreEqual(3, remainingValue);
     }
@@ -110,7 +110,7 @@ public sealed class ChipCalculatorTests
             new(amount: 150, value: 25),
         };
 
-        var (remainingValue, playerChips) = RunCalculation(caseChips, maxChips: 20, amountPlayers: 5, startingValue: 5000);
+        var (remainingValue, playerChips) = RunCalculation(caseChips, maxChips: 20, amountPlayers: 5, targetValue: 5000);
 
         Assert.AreEqual(0, remainingValue);
         Assert.HasCount(3, playerChips);
@@ -129,11 +129,11 @@ public sealed class ChipCalculatorTests
     private static (int remainingValue, List<Chip> playerChips) RunCalculation(List<Chip> caseChips
         , int maxChips
         , int amountPlayers
-        , int startingValue)
+        , int targetValue)
     {
         var playerChips = new List<Chip>();
 
-        var remainingValue = PlayerChipsHelper.CreatePlayerChips(playerChips, caseChips, maxChips, amountPlayers, startingValue);
+        var remainingValue = PlayerChipsHelper.CreatePlayerChips(playerChips, caseChips, maxChips, amountPlayers, targetValue);
 
         return (remainingValue, playerChips);
     }

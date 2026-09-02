@@ -4,18 +4,20 @@ internal sealed class ChipCalculator
 {
     private readonly List<Chip> _playerChips;
 
-    private readonly int _maxChips;
+    private readonly int _maxChipsPerValue;
 
     private readonly int _amountPlayers;
 
-    private readonly List<int> _denominationValues = new();
+    private readonly List<int> _denominationValues = [];
 
-    private readonly List<int> _denominationCaps = new();
+    private readonly List<int> _denominationCaps = [];
 
-    internal ChipCalculator(List<Chip> playerChips, int maxChips, int amountPlayers)
+    internal ChipCalculator(List<Chip> playerChips
+        , int maxChipsPerValue
+        , int amountPlayers)
     {
         _playerChips = playerChips;
-        _maxChips = maxChips;
+        _maxChipsPerValue = maxChipsPerValue;
         _amountPlayers = amountPlayers;
     }
 
@@ -24,7 +26,9 @@ internal sealed class ChipCalculator
     /// Once the last case chip has been buffered (<paramref name="nextCaseChip"/> is null), all
     /// buffered denominations are handed to the solver to compute the actual player chips at once.
     /// </summary>
-    internal bool AddPlayerChip(Chip currentCaseChip, Chip nextCaseChip, ref int remainingValue)
+    internal bool AddPlayerChip(Chip currentCaseChip
+        , Chip nextCaseChip
+        , ref int remainingValue)
     {
         var chipValue = currentCaseChip.Value;
 
@@ -51,9 +55,9 @@ internal sealed class ChipCalculator
     {
         var chipAmount = caseChipAmount / _amountPlayers;
 
-        if (chipAmount > _maxChips)
+        if (chipAmount > _maxChipsPerValue)
         {
-            chipAmount = _maxChips;
+            chipAmount = _maxChipsPerValue;
         }
 
         return chipAmount;
@@ -70,12 +74,33 @@ internal sealed class ChipCalculator
     {
         var targetValue = remainingValue;
 
+        var denominationOrder = this.GetDenominationOrderDescendingByValue();
+
+        var (isSumAchievable, chipCountUsedForSum) = this.BuildBoundedKnapsackTable(denominationOrder, targetValue);
+
+        var bestAchievableSum = FindBestAchievableSum(isSumAchievable, denominationOrder.Length, targetValue);
+
+        if (bestAchievableSum < 0)
+        {
+            // No combination of chips (not even zero of everything) matched, which should not
+            // normally happen since a sum of 0 is always achievable.
+            return;
+        }
+
+        this.ApplyChipCounts(denominationOrder, chipCountUsedForSum, bestAchievableSum, ref remainingValue);
+    }
+
+    /// <summary>
+    /// Builds an index permutation over the buffered denominations, ordered from highest to lowest
+    /// value. The chip-count-maximizing tie-break in <see cref="FindMaxUsableChipCount"/> only favors
+    /// fewer, higher-value chips overall if the highest-value denominations are considered first, so
+    /// this is independent of the order the case chips were originally fed in via
+    /// <see cref="AddPlayerChip"/> (e.g. MainForm feeds them sorted ascending by value).
+    /// </summary>
+    private int[] GetDenominationOrderDescendingByValue()
+    {
         var denominationCount = _denominationValues.Count;
 
-        // The chip-count-maximizing tie-break below only favors fewer, higher-value chips overall
-        // if the highest-value denominations are considered first. Process a descending-by-value
-        // copy of the buffered denominations here, independent of the order chips were fed in
-        // (e.g. MainForm feeds them sorted ascending by value).
         var denominationOrder = new int[denominationCount];
 
         for (var index = 0; index < denominationCount; index++)
@@ -85,12 +110,25 @@ internal sealed class ChipCalculator
 
         Array.Sort(denominationOrder, (left, right) => _denominationValues[right].CompareTo(_denominationValues[left]));
 
-        // isSumAchievable[denominationIndex, sum] is true if "sum" can be built exactly using only
-        // the first "denominationIndex" denominations (in descending-value order), each within its own cap.
+        return denominationOrder;
+    }
+
+    /// <summary>
+    /// Runs the bounded-knapsack dynamic-programming pass over the denominations (in the given
+    /// order), producing two tables:
+    /// - isSumAchievable[denominationIndex, sum]: whether "sum" can be built exactly using only the
+    ///   first "denominationIndex" denominations (each within its own cap).
+    /// - chipCountUsedForSum[denominationIndex, sum]: how many chips of the denomination at
+    ///   (denominationIndex - 1) were used to achieve "sum", so the choice can be reconstructed
+    ///   afterwards by <see cref="ApplyChipCounts"/>.
+    /// </summary>
+    private (bool[,] IsSumAchievable, int[,] ChipCountUsedForSum) BuildBoundedKnapsackTable(int[] denominationOrder
+        , int targetValue)
+    {
+        var denominationCount = denominationOrder.Length;
+
         var isSumAchievable = new bool[denominationCount + 1, targetValue + 1];
 
-        // chipCountUsedForSum[denominationIndex, sum] stores how many chips of the denomination at
-        // (denominationIndex - 1) were used to achieve "sum", so the choice can be reconstructed afterwards.
         var chipCountUsedForSum = new int[denominationCount + 1, targetValue + 1];
 
         // Base case: a sum of 0 is always achievable using zero denominations.
@@ -104,49 +142,84 @@ internal sealed class ChipCalculator
 
             var chipCountCap = _denominationCaps[originalIndex];
 
-            for (var candidateSum = 0; candidateSum <= targetValue; candidateSum++)
+            FillAchievableSumsForDenomination(isSumAchievable, chipCountUsedForSum, denominationIndex, chipValue, chipCountCap, targetValue);
+        }
+
+        return (isSumAchievable, chipCountUsedForSum);
+    }
+
+    /// <summary>
+    /// Fills in isSumAchievable/chipCountUsedForSum at row "denominationIndex" for every candidate
+    /// sum from 0 to targetValue, given the denomination's value and chip-count cap.
+    /// </summary>
+    private static void FillAchievableSumsForDenomination(bool[,] isSumAchievable
+        , int[,] chipCountUsedForSum
+        , int denominationIndex
+        , int chipValue
+        , int chipCountCap
+        , int targetValue)
+    {
+        for (var candidateSum = 0; candidateSum <= targetValue; candidateSum++)
+        {
+            var chipCount = FindMaxUsableChipCount(isSumAchievable, denominationIndex, chipValue, chipCountCap, candidateSum);
+
+            if (chipCount < 0)
             {
-                // Try using as many chips of this denomination as possible first, so that when a
-                // valid combination is found it favors fewer, higher-value chips overall (since
-                // higher-value denominations are considered first, in descending order).
-                for (var chipCount = chipCountCap; chipCount >= 0; chipCount--)
-                {
-                    var valueFromThisDenomination = chipCount * chipValue;
+                continue;
+            }
 
-                    if (valueFromThisDenomination > candidateSum)
-                    {
-                        continue;
-                    }
+            isSumAchievable[denominationIndex, candidateSum] = true;
 
-                    var remainingSumForEarlierDenominations = candidateSum - valueFromThisDenomination;
+            chipCountUsedForSum[denominationIndex, candidateSum] = chipCount;
+        }
+    }
 
-                    if (isSumAchievable[denominationIndex - 1, remainingSumForEarlierDenominations])
-                    {
-                        isSumAchievable[denominationIndex, candidateSum] = true;
+    /// <summary>
+    /// Finds the largest chip count (at most chipCountCap) of the current denomination that still
+    /// allows candidateSum to be reached, given what the earlier (already processed) denominations
+    /// can achieve. Trying the largest count first favors fewer, higher-value chips overall (since
+    /// higher-value denominations are considered first, in descending order). Returns -1 if no
+    /// count works.
+    /// </summary>
+    private static int FindMaxUsableChipCount(bool[,] isSumAchievable
+        , int denominationIndex
+        , int chipValue
+        , int chipCountCap
+        , int candidateSum)
+    {
+        for (var chipCount = chipCountCap; chipCount >= 0; chipCount--)
+        {
+            var valueFromThisDenomination = chipCount * chipValue;
 
-                        chipCountUsedForSum[denominationIndex, candidateSum] = chipCount;
+            if (valueFromThisDenomination > candidateSum)
+            {
+                continue;
+            }
 
-                        break;
-                    }
-                }
+            var remainingSumForEarlierDenominations = candidateSum - valueFromThisDenomination;
+
+            if (isSumAchievable[denominationIndex - 1, remainingSumForEarlierDenominations])
+            {
+                return chipCount;
             }
         }
 
-        var bestAchievableSum = FindBestAchievableSum(isSumAchievable, denominationCount, targetValue);
+        return -1;
+    }
 
-        if (bestAchievableSum < 0)
-        {
-            // No combination of chips (not even zero of everything) matched, which should not
-            // normally happen since a sum of 0 is always achievable.
-            return;
-        }
-
-        // Walk the denominations backwards (i.e. from lowest to highest value, the reverse of the
-        // descending order used above), reading off how many chips of each were used to reach
-        // bestAchievableSum, and materialize them as actual player chips.
+    /// <summary>
+    /// Walks the denominations backwards (i.e. from lowest to highest value, the reverse of the
+    /// descending order used to build the table), reading off how many chips of each were used to
+    /// reach bestAchievableSum, and materializes them as actual player chips.
+    /// </summary>
+    private void ApplyChipCounts(int[] denominationOrder
+        , int[,] chipCountUsedForSum
+        , int bestAchievableSum
+        , ref int remainingValue)
+    {
         var valueLeftToAllocate = bestAchievableSum;
 
-        for (var denominationIndex = denominationCount; denominationIndex >= 1; denominationIndex--)
+        for (var denominationIndex = denominationOrder.Length; denominationIndex >= 1; denominationIndex--)
         {
             var chipCount = chipCountUsedForSum[denominationIndex, valueLeftToAllocate];
 
@@ -167,7 +240,9 @@ internal sealed class ChipCalculator
     /// Finds the largest sum (at most <paramref name="targetValue"/>) that is achievable using all
     /// gathered denominations, preferring an exact match to <paramref name="targetValue"/> when possible.
     /// </summary>
-    private static int FindBestAchievableSum(bool[,] isSumAchievable, int denominationCount, int targetValue)
+    private static int FindBestAchievableSum(bool[,] isSumAchievable
+        , int denominationCount
+        , int targetValue)
     {
         for (var candidateSum = targetValue; candidateSum >= 0; candidateSum--)
         {
@@ -180,7 +255,9 @@ internal sealed class ChipCalculator
         return -1;
     }
 
-    private void AddPlayerChip(int chipAmount, int chipValue, ref int remainingValue)
+    private void AddPlayerChip(int chipAmount
+        , int chipValue
+        , ref int remainingValue)
     {
         _playerChips.Add(new Chip(chipAmount, chipValue));
 

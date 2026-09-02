@@ -4,13 +4,13 @@ internal static class PlayerChipsHelper
 {
     public static int CreatePlayerChips(List<Chip> playerChips
         , List<Chip> caseChips
-        , int maxChips
+        , int maxChipsPerValue
         , int amountPlayers
-        , int startingValue)
+        , int targetValue)
     {
-        var remainingValue = startingValue;
+        var remainingValue = targetValue;
 
-        var chipCalculator = new ChipCalculator(playerChips, maxChips, amountPlayers);
+        var chipCalculator = new ChipCalculator(playerChips, maxChipsPerValue, amountPlayers);
 
         for (var index = 0; index < caseChips.Count; index++)
         {

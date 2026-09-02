@@ -6,28 +6,13 @@ const fs = require("fs");
 const path = require("path");
 const vm = require("vm");
 
-const scriptPath = path.join(__dirname, "PokerChips.js");
+const scriptPath = path.join(__dirname, "PokerChipsSolver.js");
 const source = fs.readFileSync(scriptPath, "utf8");
 
-// Minimal DOM mock: getMaxAmount() reads getById("amountPlayers").value and
-// getById("maxChips").value, so provide those two elements.
-let domValues = {};
-
-const documentMock = {
-    getElementById(id)
-    {
-        if(domValues[id] === undefined)
-        {
-            throw new Error(`Unexpected getElementById("${id}")`);
-        }
-
-        return { value: domValues[id] };
-    }
-};
-
-const sandbox = { document: documentMock, console: console };
+// The solver file has no DOM dependency, so a plain sandbox is sufficient.
+const sandbox = { console: console };
 vm.createContext(sandbox);
-vm.runInContext(source, sandbox, { filename: "PokerChips.js" });
+vm.runInContext(source, sandbox, { filename: "PokerChipsSolver.js" });
 
 // Top-level `class`/`function` declarations live in the context's lexical scope,
 // not as properties of the sandbox object, so fetch references via another eval.
@@ -36,12 +21,10 @@ const addPlayerChipsFn = vm.runInContext("addPlayerChips", sandbox);
 
 function runCase(name, caseChipDefs, maxChips, amountPlayers, startingValue, expectedRemaining, expectedPlayerChips)
 {
-    domValues = { amountPlayers: amountPlayers, maxChips: maxChips };
-
     const caseChips = caseChipDefs.map(([amount, value]) => new ChipCtor(amount, value));
     const playerChips = [];
 
-    const remainingValue = addPlayerChipsFn(caseChips, playerChips, startingValue);
+    const remainingValue = addPlayerChipsFn(caseChips, playerChips, startingValue, amountPlayers, maxChips);
 
     let pass = remainingValue === expectedRemaining;
 
