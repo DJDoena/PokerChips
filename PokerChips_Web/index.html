@@ -18,12 +18,7 @@
         <meta property="og:locale" content="de_DE" />
         <script src="PokerChipsSolver.js"></script>
         <script src="PokerChips.js"></script>
-        <style>
-            #pokerTable td, #pokerTable th
-            {
-                padding: 4px 15px;
-            }
-        </style>
+        <link rel="stylesheet" href="PokerChips.css" />
     </head>
     <body style="font-family: Verdana, Geneva, sans-serif;">
         <h1>Poker Chips Rechner</h1>
@@ -39,7 +34,7 @@
             jeder Farbe jeder Spieler erh&auml;lt.
         </p>
         <form>
-            <table id="pokerTable" style="border: 0px;">
+            <table id="pokerTable" style="border: 0px; width: 100%;">
                 <tr>
                     <td>Spieler:</td>
                     <td><input type="number" id="amountPlayers" min="2" max="10" value="5" /></td>

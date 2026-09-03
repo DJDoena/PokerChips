@@ -1,0 +1,30 @@
+#pokerTable td, #pokerTable th
+{
+    padding: 4px 15px;
+}
+
+#pokerTable
+{
+    width: 100%;
+    table-layout: auto;
+}
+
+#pokerTable input, #pokerTable select
+{
+    box-sizing: border-box;
+    max-width: 100%;
+}
+
+#pokerTable input[type="button"]
+{
+    white-space: normal;
+}
+
+@media (max-width: 480px)
+{
+    #pokerTable td, #pokerTable th
+    {
+        padding: 3px 6px;
+        font-size: 0.85em;
+    }
+}
