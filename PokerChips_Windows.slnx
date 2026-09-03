@@ -3,6 +3,8 @@
     <File Path="README.md" />
   </Folder>
   <Folder Name="/Web/">
+    <File Path="PokerChips_Web/english.gif" />
+    <File Path="PokerChips_Web/german.gif" />
     <File Path="PokerChips_Web/index.html" />
     <File Path="PokerChips_Web/PokerChips.js" />
     <File Path="PokerChips_Web/PokerChipsSolver.js" />
