@@ -6,6 +6,7 @@
     <File Path="PokerChips_Web/english.gif" />
     <File Path="PokerChips_Web/german.gif" />
     <File Path="PokerChips_Web/index.html" />
+    <File Path="PokerChips_Web/PokerChips.css" />
     <File Path="PokerChips_Web/PokerChips.js" />
     <File Path="PokerChips_Web/PokerChipsSolver.js" />
     <File Path="PokerChips_Web/verify-solver.js" />
